@@ -41,24 +41,60 @@ def create_app():
     def index():
         bookings = HotelBooking.query.all()
         return render_template('index.html', bookings=bookings)
+    
 
-    @app.route('/login', methods=['GET', 'POST'])
+
+
+    @app.route('/login', methods=['POST'])
     def login():
-        form = LoginForm()  # LoginForm is a FlaskForm with username and password fields
-        if form.validate_on_submit():
-            # Query your database for the user
-            user = User.query.filter_by(username=form.username.data).first()
-            # If user exists and password is correct
-            if user and check_password_hash(user.password, form.password.data):
-                # Use Flask-Login to log in the user and start their session
-                login_user(user)
-                # Redirect to the index page if the user is authenticated
-                return jsonify({'success': True, 'is_admin': user.is_admin}), 200
-            else:
-                # If the login credentials are incorrect, return an error
-                return jsonify({'success': False, 'error': 'Invalid username or password'}), 401
-        # If the request is a GET or the form is not valid, render the login template
-        return render_template('login.html', form=form)
+        if request.is_json:  # Check if the request contains JSON data
+            data = request.get_json()
+            username = data.get('username')
+            password = data.get('password')
+        else:
+            username = request.form.get('username')
+            password = request.form.get('password')
+
+        if not username or not password:
+            return jsonify({'success': False, 'error': 'Invalid request'}), 400
+
+    # Query your database for the user
+        user = User.query.filter_by(username=username).first()
+
+    # If user exists and password is correct
+        if user and check_password_hash(user.password, password):
+           
+        # Use Flask-Login to log in the user and start their session
+           login_user(user)
+           print(f"User logged in: {user.username}, Admin status: {user.is_admin}")  # Add this line
+        # Return a JSON response with success and admin status
+           return jsonify({'success': True, 'is_admin': user.is_admin}), 200
+
+    # If the login credentials are incorrect, return an error
+        return jsonify({'success': False, 'error': 'Invalid username or password'}), 401
+
+
+    
+    # @app.route('/login', methods=['GET', 'POST'])
+    # def login():
+    #     data = request.get_json() 
+    #     form = LoginForm()  # LoginForm is a FlaskForm with username and password fields
+    #     if form.validate_on_submit():
+    #         # Query your database for the user
+    #         user = User.query.filter_by(username=form.username.data).first()
+    #         # If user exists and password is correct
+    #         if user and check_password_hash(user.password, form.password.data):
+    #             # Use Flask-Login to log in the user and start their session
+    #             login_user(user)
+    #             print(f"User logged in: {user.username}, Admin status: {user.is_admin}")  # Add this line
+    #             # Redirect to the index page if the user is authenticated
+    #             return jsonify({'success': True, 'is_admin': user.is_admin}), 200
+    #         else:
+    #             # If the login credentials are incorrect, return an error
+    #             return jsonify({'success': False, 'error': 'Invalid username or password'}), 401
+    #     # If the request is a GET or the form is not valid, render the login template
+    #     return render_template('login.html', form=form)
+    
 
     @app.route('/logout')
     @login_required
@@ -74,13 +110,18 @@ def create_app():
         data = request.get_json()
         username = data.get('username')
         password = data.get('password')
+        is_admin = data.get('is_admin', False) 
         if not username or not password:
             return jsonify({'success': False, 'message': 'Missing username or password'}), 400
+        if User.query.filter_by(username=username).first():
+            return jsonify({'success': False, 'message': 'Username already exists'}), 409
         hashed_password = generate_password_hash(password)
         new_user = User(username=username, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
-        return jsonify({'success': True, 'username': new_user.username}), 201
+        # return jsonify({'success': True, 'username': new_user.username}), 201
+        return jsonify({'success': True, 'username': new_user.username, 'is_admin': new_user.is_admin}), 201
+    
 
     # @app.route('/register', methods=['GET', 'POST'])
     # def register():
@@ -303,7 +344,7 @@ def create_app():
         return render_template('contact.html', form=form)
 
     # Admin Dashboard Route
-    @app.route('/admin/dashboard')
+    @app.route('/admin')
     @login_required
     def admin_dashboard():
         if not current_user.is_admin:  # Admin check logic

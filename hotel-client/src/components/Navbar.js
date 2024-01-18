@@ -44,6 +44,7 @@ function Navbar() {
             <Link to="/admin">Admin Dashboard</Link> */}
             <Link to="/special-order" style={linkStyle}>Special Orders</Link>
             <Link to="/room-service" style={linkStyle}>Room Service</Link>
+            <Link to="/admin" style={linkStyle}>Admin Dashboard</Link>
             {/* <Link to="/food-order" style={linkStyle}>Food Order</Link> */}
             {/* <Link to="/delivery">Delivery</Link>
             <Link to="/payment">Make Payment</Link> */}
