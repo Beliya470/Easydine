@@ -1,0 +1,287 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* General Styling */
+  body {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  /* Utility Classes */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+  
+  .btn {
+    display: inline-block;
+    background: #ff6b6b;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn:hover {
+    background-color: #e63946;
+  }
+  
+  /* Hero Section */
+  .hero-section {
+    background-image: url('../assets/pexels-vincent-rivaud-2363807.jpg');
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+    padding: 50px 0;
+    color: #fff;
+  }
+  
+  .hero-content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .hero-content h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+  }
+  
+  .search-form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .search-form input[type="text"],
+  .search-form select,
+  .search-form input[type="date"] {
+    padding: 10px;
+    width: 100%;
+    border: none;
+  }
+  
+  .search-form button {
+    padding: 10px 20px;
+    border: none;
+    background: #ffc107;
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  /* Room Categories Section */
+  .room-categories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    background: #f7f7f7;
+    padding: 50px 0;
+  }
+  
+  .room-category {
+    text-align: center;
+    padding: 20px;
+    flex-basis: calc(33.333% - 40px);
+    margin: 20px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .room-category img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    border-radius: 5px;
+  }
+  
+  .room-category h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+  
+  .room-category p {
+    font-size: 1em;
+    margin-bottom: 15px;
+  }
+  
+  .room-category button {
+    padding: 10px 15px;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .room-category button:hover {
+    background: #e63946;
+  }
+  
+  /* Special Offers Section */
+  .special-offers {
+    background-color: #fff;
+    padding: 50px 0;
+  }
+  
+  .special-offers .offer {
+    margin-bottom: 30px;
+  }
+  
+  .special-offers .offer img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  .special-offers .offer h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+  
+  .special-offers .offer p {
+    font-size: 1em;
+    margin-bottom: 15px;
+  }
+  
+  .special-offers .offer button {
+    padding: 10px 15px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .special-offers .offer button:hover {
+    background-color: #388E3C;
+  }
+  
+  /* Popular Destinations Section */
+  .popular-destinations {
+    background: #f1f1f1;
+    padding: 50px 0;
+  }
+  
+  .popular-destinations h2 {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 30px;
+  }
+  
+  .popular-destinations .destination-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+  }
+  
+  .popular-destinations .destination {
+    width: calc(25% - 20px);
+    margin: 10px;
+    text-align: center;
+  }
+  
+  .popular-destinations .destination img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 15px;
+  }
+  
+  .popular-destinations .destination h3 {
+    font-size: 1.2em;
+    color: #333;
+  }
+  
+  /* Subscription Section */
+  .subscription-section {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 50px 0;
+  }
+  
+  .subscription-section h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+  
+  .subscription-section p {
+    margin-bottom: 30px;
+  }
+  
+  .subscription-form input[type="email"] {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+  
+  .subscription-form button {
+    padding: 10px 20px;
+    background: #ff6b6b;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* Footer Section */
+  .footer {
+    background: #252525;
+    color: #f1f1f1;
+    padding: 20px 0;
+    text-align: center;
+  }
+  
+  .footer a {
+    color: #f1f1f1;
+    text-decoration: none;
+    margin: 0 10px;
+  }
+  
+  .footer a:hover {
+    text-decoration: underline;
+  }
+  
+  .footer .footer-links {
+    margin-bottom: 20px;
+  }
+  
+  .footer .footer-links a {
+    margin: 0 15px;
+  }
+  
+  .footer p {
+    font-size: 0.8em;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .hero-section, .room-categories, .special-offers, .popular-destinations {
+      flex-direction: column;
+    }
+  
+    .room-category, .popular-destinations .destination {
+      flex-basis: 100%;
+    }
+  
+    .subscription-form input[type="email"], .subscription-form button {
+      width: 100%;
+      margin: 10px 0;
+    }
+  }
+  

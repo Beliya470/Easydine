@@ -1,0 +1,54 @@
+/* Navbar styles */
+.navbar {
+  display: flex;
+  flex-direction: row; /* Align items horizontally */
+  justify-content: center; /* Center items horizontally */
+  align-items: center; /* Center items vertically */
+  background-color: #333; /* Background color for the navbar */
+  padding: 20px; /* Padding on all sides */
+  width: 100%; /* Full width */
+  box-sizing: border-box; /* Padding does not affect the total width */
+}
+
+  
+  .navbar a {
+    text-decoration: none;
+    color: #fff; /* Text color for links */
+    padding: 10px 15px; /* Balanced padding to the buttons */
+    margin-right: 10px; /* Right margin for spacing between buttons */
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out, background-color 0.2s;
+    display: inline-flex; /* Use inline-flex for aligning text inside anchors */
+    align-items: center; /* Center the text vertically */
+    justify-content: center; /* Center the text horizontally */
+  }
+  
+  .navbar a:hover {
+    background-color: #ff6b6b; /* Background color on hover */
+    transform: translateY(-3px); /* 'Dance' move upwards */
+    align-items: center; 
+  }
+  
+  .navbar a:active {
+    transform: scale(0.95); /* Slightly shrink the button when clicked */
+    transition: transform 0.2s; /* Smooth transition for the transform */
+    align-items: center; 
+  }
+  
+  @media (min-width: 768px) {
+    .navbar {
+      justify-content: center; /* Keep items centered on all screen sizes */
+      padding-left: calc((100% - max-content) / 2); /* Center the navbar content with equal padding on both sides */
+      padding-right: calc((100% - max-content) / 2);
+    }
+  }
+    .navbar a {
+      margin: 0 15px 0 0; /* Adjust margins for spacing between buttons */
+      align-items: center; 
+    }
+  
+  /* Add this to center the text within the navbar */
+.navbar-text {
+  text-align: center;
+  color: white; /* Text color */
+}

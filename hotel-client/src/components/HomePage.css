@@ -1,0 +1,411 @@
+/* src/index.css or your main CSS file */
+@import "~font-awesome/css/font-awesome.css";
+
+
+/* HomePage styles */
+.home-page header {
+    background-size: cover;
+    padding: 60px 20px;
+    text-align: center;
+    color: rgb(233, 230, 230);
+    background-blend-mode: darken;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay for readable text */
+  }
+  .hotel-info-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 30px;
+  }
+
+ 
+.hotel-description {
+  margin-left: 10px; /* Add margin to the left for bullet points */
+  padding: 0; /* Remove any additional padding */
+  line-height: 1.5; /* Set line height to 1.5 for spacing between highlights */
+}
+
+.hotel-description {
+  text-align: left; /* Align text to the left */
+  font-size: 18px; /* Adjust font size for highlight content as needed */
+}
+
+
+  .hotel-info-images {
+    flex: 1; /* Allows the container to grow and shrink as needed */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Three images per row */
+    gap: 20px; /* Space between images */
+    margin-top: 20px; /* Space above the image grid */
+}
+
+.hotel-info-images img {
+    width: 100%; /* Each image takes full width of the column */
+    height: 100%; /* Set height to 100% of parent container */
+    object-fit: cover; /* Ensures the image covers the area without stretching */
+    border-radius: 8px; /* Optional: Adds rounded corners to the images */
+}
+
+/* You can set a fixed height for the container of the images to ensure consistency */
+.hotel-info-images div {
+    height: 50px; /* Adjust height as needed */
+    width: 50px;
+}
+
+
+/* General styling for the hotel-info-content */
+.hotel-info-content {
+  max-width: 50%; /* Maximum width can be 50% to match the images */
+  font-size: 16px; /* Adjust font size for better readability */
+  font-family: Arial, sans-serif; /* Change to a more commonly used font */
+  line-height: 1.5; /* Increase line height for better readability */
+  text-align: left; /* Align text to the left */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-right: 20px;
+}
+
+/* Adjust heading styles within the hotel-info-content */
+.hotel-info-content h1,
+.hotel-info-content h2,
+.hotel-info-content h3,
+.hotel-info-content h4 {
+  font-size: 20px; /* Set a consistent font size for headings */
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+/* Adjust paragraph styles within the hotel-info-content */
+.hotel-info-content p {
+  margin-bottom: 1em; /* Add space after paragraphs */
+  padding: 10px;
+}
+
+/* Style the "Order Now" button */
+.btn-primary {
+  background-color: #ff6b6b; /* Set button color */
+  color: white;
+  padding: 15px 25px; /* Increase padding for a larger button */
+  font-size: 18px; /* Increase font size for the button text */
+  text-transform: uppercase;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: center; /* Align button to the center horizontally */
+  margin-top: auto; /* Push the button to the bottom */
+  text-decoration: none; /* Remove underline from text */
+  display: block; /* Make the link behave like a block element */
+  padding: 20px;
+}
+
+/* Align the "Show More/Less" button to the left and style it */
+.show-more-btn {
+  align-self: flex-start; /* Align button to the left */
+  margin-top: 0; /* Remove margin from the top of the button */
+  margin-bottom: 1em; /* Add space below the button */
+  font-size: 16px; /* Adjust font size for the button */
+  padding: 20px;
+}
+
+/* Style the lists for highlights and policies */
+.highlight-list,
+.policy-list {
+  list-style-type: none; /* Remove bullet points */
+  padding-left: 0; /* Align with the start of the text */
+  margin: 0; /* Remove default margins */
+  padding: 20px;
+}
+
+/* Style individual list items for icons and text */
+.highlight-list li,
+.policy-list li {
+  display: flex;
+  align-items: center;
+  font-size: 14px; /* Adjust font size for list items */
+  margin-bottom: 0.5em; /* Add space between list items */
+}
+
+.highlight-list li .icon,
+.policy-list li .icon {
+  margin-right: 0.5em; /* Add space after the icon */
+  font-size: 10px; /* Make the icon slightly larger */
+}
+
+
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .hotel-info-content,
+  .hotel-info-images {
+    max-width: 100%; /* Full width on smaller screens */
+  }
+  .hotel-info-section {
+    flex-direction: column;
+  }
+  .btn-primary {
+    width: auto; /* Allow button to adjust its width */
+  }
+}
+
+
+  /* HomePage.css */
+
+/* ... existing styles ... */
+
+.room-cards-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns in a row */
+  gap: 20px;
+  padding: 20px;
+}
+
+.room-card {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff; /* Optional: set a background color for the cards */
+}
+
+.room-card img {
+  width: 100%; /* Full width of the card */
+  height: auto; /* Adjust height automatically */
+  aspect-ratio: 4 / 3; /* Maintain an aspect ratio for the images */
+  object-fit: cover; /* Ensures the image covers the area, might crop */
+}
+
+.room-card h3 {
+  padding: 10px;
+  background-color: #f8f8f8;
+  margin: 0;
+  border-bottom: 1px solid #ccc;
+}
+
+/* ... other styles ... */
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .room-cards-container {
+    grid-template-columns: 1fr; /* Stack cards on top of each other on small screens */
+  }
+}
+/* Corrected class name for the container based on your React component */
+.guest-rooms-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns in a row */
+  gap: 20px; /* Space between the cards */
+  padding: 20px; /* Padding inside the container */
+}
+
+.room-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
+  text-align: center; /* Center text */
+}
+
+.room-card img {
+  width: 100%; /* Adjust the width to fit the container */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: cover; /* Cover the area, may crop the image */
+}
+
+/* ... other styles ... */
+
+/* Ensure the cards stack on smaller screens */
+@media (max-width: 768px) {
+  .guest-rooms-container {
+    grid-template-columns: 1fr; /* Single column layout on smaller screens */
+  }
+}
+
+/* ... other styles ... */
+
+  
+  .services-overview article {
+    background-size: cover;
+    width: 300px;
+    height: 300px; /* Set a fixed height for all images */
+    padding: 20px;
+    padding: 40px;
+    border-radius: 8px;
+    margin: 20px;
+    color: white;
+    background-blend-mode: darken;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    margin: 20px;
+    color: white;
+    background-blend-mode: darken;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* Center-align text */
+  }
+  
+  .btn-primary {
+    background-color: #ff6b6b; /* Soft red for primary actions */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .btn-primary:hover,
+  .btn-primary:focus {
+    background-color: #ff4757; /* A slightly darker red on hover/focus */
+    box-shadow: 0 5px 15px rgba(255, 99, 99, 0.5);
+  }
+  
+  .hotel-features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+  }
+  
+  .feature {
+    flex-basis: calc(33% - 40px);
+    background: #ffffff;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .feature .icon {
+    font-size: 48px; /* Size of the icons */
+    margin-bottom: 20px;
+  }
+  
+  .feature h3 {
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .hotel-footer {
+    background-color: #454343;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+}
+
+.footer-navigation {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Adjust the gap between buttons as needed */
+}
+
+.footer-link {
+    text-decoration: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #181717; /* Soft red for padding color */
+    transition: background-color 0.2s ease-in-out;
+}
+
+.footer-link:hover {
+    background-color: #1b1a1a; /* Darker red on hover */
+}
+
+p {
+    margin-top: 20px; /* Adjust the top margin for spacing */
+}
+
+.social-icons {
+    margin-top: 20px; /* Adjust the top margin for spacing */
+}
+
+.social-icon {
+    text-decoration: none;
+    color: white;
+    padding: 10px;
+    border-radius: 50%; /* Make the icons circular */
+    background-color: #6a7a8a; /* Soft red for padding color */
+    transition: background-color 0.2s ease-in-out;
+    margin: 0 5px; /* Adjust the margin between icons */
+}
+
+.social-icon:hover {
+    background-color: #98f090; /* Darker red on hover */
+}
+
+  
+  /* Adding some space at the bottom */
+  .home-page {
+    padding-bottom: 30px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .services-overview article,
+    .hotel-features .feature {
+      flex-basis: 100%;
+      margin: 10px 0;
+    }
+  
+    .home-page header {
+      padding: 30px 20px;
+    }
+  }
+  
+  /* Link color for better contrast and readability */
+  a, .btn-primary {
+    color: #121111; /* Soft red, consistent with the primary action buttons */
+  }
+  
+  /* Additional global styles */
+  body {
+    background-color: #eceff1; /* Light grey background for a calm, neutral look */
+    color: #333; /* Dark grey color for text for better readability */
+  }
+  
+  /* Ensure links stand out */
+  /* Ensure links stand out */
+a, .btn-primary {
+    color: #0f0f0f; /* Soft red, consistent with the primary action buttons */
+    text-decoration: none; /* Removes underline from links */
+  }
+  
+  a:hover,
+  a:focus {
+    text-decoration: underline; /* Adds underline on hover for better UX */
+  }
+  
+  /* Utility classes for margin and padding */
+  .mt-20 { margin-top: 20px; }
+  .mb-20 { margin-bottom: 20px; }
+  .pt-20 { padding-top: 20px; }
+  .pb-20 { padding-bottom: 20px; }
+  
+  /* Custom color classes */
+  .bg-light { background-color: #f8f9fa; } /* Very light grey background */
+  .text-primary { color: #0d6efd; } /* Bootstrap primary blue for text */
+  .text-secondary { color: #6c757d; } /* Bootstrap secondary grey for text */
+  
+  /* Custom button styles for different actions */
+  .btn-secondary {
+    background-color: #6c757d; /* Bootstrap secondary button color */
+    color: white;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #5a6268; /* Darken on hover */
+  }
+  
+  
+  

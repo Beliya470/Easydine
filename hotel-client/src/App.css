@@ -1,0 +1,90 @@
+/* Basic reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body and global styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.6;
+  background-color: #f7f7f7;
+  color: #333;
+  padding: 20px;
+}
+
+/* Main container */
+.home-page {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Main heading */
+.home-page h1 {
+  color: #0d6efd; /* Bootstrap primary blue */
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Introductory paragraph */
+.home-page p {
+  font-size: 1.1em;
+  line-height: 1.8;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Container for links */
+.links-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+/* Styling for individual links */
+.home-link {
+  background-color: #0d6efd; /* Bootstrap primary blue */
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s, transform 0.3s;
+  /* Spacing and sizing for links */
+  margin: 0 10px;
+  min-width: 150px;
+  text-align: center;
+}
+
+/* Hover and focus states for links */
+.home-link:hover,
+.home-link:focus {
+  background-color: #0b5ed7; /* A slightly darker blue on hover/focus */
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .home-page {
+    padding: 10px;
+  }
+
+  .links-container {
+    flex-direction: column;
+  }
+
+  .home-link {
+    margin-bottom: 10px;
+  }
+}
+
+/* Adding some space at the bottom */
+.home-page {
+  padding-bottom: 30px;
+}
