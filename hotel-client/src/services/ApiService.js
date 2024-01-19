@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Define the base URL for the API
 const API_URL = 'http://localhost:5000'; // or the URL where your Flask app is hosted
-
+axios.defaults.baseURL = 'http://localhost:5000';
 // Place a special order
 export const placeSpecialOrder = async (request) => {
     try {
@@ -72,7 +72,7 @@ export const completePayment = async (amount) => {
 // Fetch all bookings
 export const fetchBookings = async () => {
     try {
-        const response = await axios.get(`${API_URL}/api/bookings`);
+        const response = await axios.get(`${API_URL}/booking`);
         return response.data;
     } catch (error) {
         console.error('Error fetching bookings:', error);

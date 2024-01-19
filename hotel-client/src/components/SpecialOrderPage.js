@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useState, useEffect } from 'react'; // Removed duplicate import
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext'; 
+
 
 const specialOrderPageStyles = {
   container: {
@@ -47,23 +51,31 @@ const specialOrderPageStyles = {
   },
 };
 
-function SpecialOrderPage() {
+function SpecialOrderPage() { 
   const [request, setRequest] = useState('');
   const [error, setError] = useState('');
   const history = useNavigate();
+  const { user } = useAuth();
 
-  const API_URL = 'http://localhost:5000/special-order'; // Replace with your server URL
+  const API_URL = 'http://localhost:5000/special-order';
+
+  const userId = user ? user.id : null; // Check if user is not null
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
+  
+    if (!user) {
+      history('/login'); // Redirect to the login page if user is null
+      return;
+    }
+  
     try {
-      const response = await axios.post(API_URL, {
-        user_id: 'current_user_id', // Replace with actual user ID
-        request: request,
-      });
+      // const response = await axios.post(API_URL, { request });
+      // const response = await axios.post(API_URL, { request }, { maxRedirects: 0 });
+      const response = await axios.post(API_URL, { request, userId: user.id });
 
+  
       if (response.data.success) {
         history.push('/success'); // Redirect to a success page or another page
         // Display a success message if needed
@@ -75,6 +87,7 @@ function SpecialOrderPage() {
       setError('An error occurred while placing the order.');
     }
   };
+  
 
   return (
     <div style={specialOrderPageStyles.container}>

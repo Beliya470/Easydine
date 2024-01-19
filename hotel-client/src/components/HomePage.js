@@ -97,7 +97,7 @@ function HomePage() {
       <section className="guest-rooms-section">
         <header>
           <h2>Guest Rooms</h2>
-          <Link to="/book-room" className="see-more-link">SEE MORE</Link>
+          <Link to="/booking" className="see-more-link">SEE MORE</Link>
         </header>
         <div className="guest-rooms-container">
           {guestRooms.map((room, index) => (
@@ -183,7 +183,7 @@ function HomePage() {
           </ul>
             
           </div>
-          <Link to="/food-order" className="btn-primary">Order Now</Link>
+          <Link to="/booking" className="btn-primary">Reserve</Link>
           </div>
         </div>
       </section>

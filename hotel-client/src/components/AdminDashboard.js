@@ -8,7 +8,7 @@ function AdminDashboard() {
     useEffect(() => {
         async function fetchBookings() {
             try {
-                const response = await axios.get('/api/bookings');
+                const response = await axios.get('/booking');
                 setBookings(response.data);
                 setLoading(false);
             } catch (error) {

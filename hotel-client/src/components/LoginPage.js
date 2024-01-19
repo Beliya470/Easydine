@@ -13,14 +13,15 @@ function AuthPage() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
+    
+
     const API_URL = 'http://localhost:5000';
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setError('');
-    
+
         const endpoint = isLogin ? '/login' : '/register';
-    
         const payload = isLogin ? { 
             username: credentials.username, 
             password: credentials.password 
@@ -30,11 +31,12 @@ function AuthPage() {
             is_admin: credentials.is_admin
         };
         console.log("Sending to server:", payload);
+
         if (!isLogin && credentials.password !== credentials.confirmPassword) {
             setError("Passwords don't match.");
             return;
         }
-    
+
         try {
             const response = await axios.post(`${API_URL}${endpoint}`, payload, {
                 headers: {
@@ -42,18 +44,22 @@ function AuthPage() {
                 }
             });
             console.log("Received from server:", response.data);
-    
-            // New: Handle registration and login separately
+
             if (response.data.success) {
                 if (isLogin) {
                     // User is logging in
-                    sessionStorage.setItem('user_logged_in', true);
-                    sessionStorage.setItem('is_admin', response.data.is_admin);
-                    const redirectPath = response.data.is_admin ? '/admin/dashboard' : '/profile';
+                    // const userID = response.data.user_id; // Adjust according to your actual response structure
+                    // sessionStorage.setItem('user', JSON.stringify(response.data));
+                    sessionStorage.setItem('user_id', response.data.user_id);
+                    navigate(`/profile/${response.data.user_id}`);
+                    // sessionStorage.setItem('user_logged_in', true);
+                    const redirectPath = response.data.is_admin ? '/admin' : `/profile/${response.data.user_id}`;
+
+                    // const redirectPath = response.data.is_admin ? '/admin' : `/profile/${userID}`;
                     navigate(redirectPath);
                 } else {
                     // User has registered successfully
-                    // New: Prompt user to log in after registration
+                    // New: Alert user and switch to login form without redirecting
                     alert('Registration successful. Please log in.');
                     setIsLogin(true); // Switch to the login form
                 }
@@ -62,66 +68,10 @@ function AuthPage() {
             }
         } catch (error) {
             console.error('Auth error:', error.response ? error.response.data : error);
-            setError('An error occurred.');
+            setError('Username already exists');
         }
     };
-    
-    
-    
-//     const handleSubmit = async (event) => {
-//         event.preventDefault();
-//         setError('');
 
-//         const endpoint = isLogin ? '/login' : '/register';
-
-//         const payload = isLogin ? { 
-//             username: credentials.username, 
-//             password: credentials.password 
-//         } : { 
-//             username: credentials.username, 
-//             password: credentials.password,
-//             is_admin: credentials.is_admin
-//         };
-//         console.log("Sending to server:", payload);
-//         if (!isLogin && credentials.password !== credentials.confirmPassword) {
-//             setError("Passwords don't match.");
-//             return;
-//         }
-    
-//         try {
-//             const response = await axios.post(`${API_URL}${endpoint}`, payload, {
-//                 headers: {
-//                     'Content-Type': 'application/json'
-//                 }
-//             });
-//             console.log("Received from server:", response.data);
-
-           
-
-//         if (response.data.success) {
-//             sessionStorage.setItem('user_logged_in', true);
-//             sessionStorage.setItem('is_admin', response.data.is_admin);
-//             const redirectPath = response.data.is_admin ? '/admin/dashboard' : '/profile';
-//             navigate(redirectPath);
-//         } else {
-//             setError(response.data.message || 'Invalid credentials.');
-//         }
-//     } catch (error) {
-//         console.error('Auth error:', error.response ? error.response.data : error);
-//         setError('An error occurred.');
-//     }
-// };
-        
-
-
-
-
-
-
-
-
-
-        
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
     };
@@ -167,6 +117,7 @@ function AuthPage() {
         textDecoration: 'underline',
         cursor: 'pointer',
     };
+    
 
     return (
         <div style={pageStyle}>
@@ -205,7 +156,10 @@ function AuthPage() {
                             name="is_admin"
                             type="checkbox"
                             checked={credentials.is_admin}
-                            onChange={handleChange}
+                            onChange={(e) => setCredentials({ ...credentials, is_admin: e.target.checked })}
+                            // onChange={(e) => handleChange({ ...e, target: { ...e.target, value: e.target.checked ? 'true' : 'false' } })}
+                            // onChange={handleChange}
+                            // onChange={(e) => handleChange({ ...e, target: { ...e.target, name: 'is_admin', value: e.target.checked } })}
                         />
                         Register as admin
                     </label>

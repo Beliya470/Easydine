@@ -1,7 +1,90 @@
 import React, { useState } from 'react';
-import './BookingPage.css'; // Import your custom stylesheet
+import DatePicker from 'react-datepicker'; 
+import './BookingPage.css'; 
+import 'react-datepicker/dist/react-datepicker.css';
+
 
 function BookingPage() {
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [bookingRoomId, setBookingRoomId] = useState(null);
+
+  // Remove this line:
+const [bookingSuccess, setBookingSuccess] = useState(false);
+
+
+  
+  const [showBookingForm, setShowBookingForm] = useState(false);
+ 
+
+  // const [bookingSuccess, setBookingSuccess] = useState(false);
+
+  // const handleBookingSubmission = (event) => {
+  //   event.preventDefault();
+  //   // Implement your booking logic here.
+  //   // After the booking logic:
+  //   setBookingSuccess(true); // Set the success message to true
+  // };
+
+
+
+  const handleBookRoom = (roomId) => {
+    
+    setBookingRoomId(roomId); // Set the current room id for booking
+    // You might want to toggle visibility of the date-picker here or navigate the user to the booking details page
+  };
+
+  const confirmDates = () => {
+    setShowBookingForm(true);
+  };
+  const handleSuccessAcknowledgement = () => {
+    setBookingSuccess(false); // Hide the success message
+    // Here you can also reset form values or redirect the user as needed
+    // For example, to reset the form you could setStartDate(new Date()), setEndDate(new Date()), etc.
+    // To redirect the user, you could use window.location.href = '/some-path';
+  };
+
+
+    // Modify your SuccessMessage component
+const SuccessMessage = () => (
+  <div className="success-message">
+    <p>Reservation was successful!</p>
+    <button onClick={handleSuccessAcknowledgement} className="acknowledge-button">OK</button>
+  </div>
+);
+
+
+
+
+
+
+const handleBookingSubmission = () => {
+  // Here you would send the booking information to your server
+  // For now, we'll just log it to the console
+  const bookingDetails = {
+    // userId: /* your user's id */,
+    roomId: bookingRoomId,
+    checkIn: startDate,
+    checkOut: endDate,
+    // any other booking details
+  };
+  console.log(bookingDetails);
+
+  // Set the success message to true
+  setBookingSuccess(true);
+};
+
+
+
+
+  const handleDateChange = (dates) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+    // Here you would handle the date change, perhaps updating state or making a booking API call
+  };
+
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -11,127 +94,205 @@ function BookingPage() {
     guests: 1,
   });
 
+  const [availableRooms, setAvailableRooms] = useState([]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission here
+    document.getElementById('available-rooms-section').scrollIntoView({ behavior: 'smooth' });
   };
+
+  const API_URL = 'http://localhost:5000';
+  const handleFetchRooms = () => {
+    fetch(`${API_URL}/booking`) // Correct use of template literals
+      .then(response => response.json())
+      .then(data => setAvailableRooms(data))
+      .catch(error => console.error('Error fetching available rooms:', error));
+  };
+  // const handleFetchRooms = () => {
+  //   fetch(`${API_URL}/booking`)
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! Status: ${response.status}`);
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       // Check if data.rooms is an array or do any necessary data transformation
+  //       const roomsArray = Array.isArray(data) ? data : [];
+  
+  //       setAvailableRooms(roomsArray);
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error fetching available rooms:', error);
+  //     });
+  // };
+  
+
+  const handleRoomSelection = (roomId) => {
+    console.log('Selected room ID:', roomId);
+    // Additional logic for room selection can be added here
+  };
+
+  const roomList = availableRooms.map(room => (
+    <div key={room.id} className="room-card">
+      {/* <img src={`${API_URL}/${room.image_url.replace('static/', '')}`} alt={room.category} className="room-image" /> */}
+      {/* <img src={`${API_URL}${room.image_url}`} alt={room.category} className="room-image" /> */}
+      <img src={`${API_URL}/${room.image_url.split('static/').pop()}`} alt={room.category} className="room-image" />
+
+
+
+      {/* <img src={`${API_URL}/static/${room.image_url}`} alt={room.category} className="room-image" /> */}
+      <div className="room-details">
+        <h2>{room.category}</h2>
+        <p>{room.style}</p>
+        {bookingRoomId === room.id ? (
+          <>
+            <div className="date-picker-container">
+              <DatePicker
+                selected={startDate}
+                onChange={handleDateChange}
+                startDate={startDate}
+                endDate={endDate}
+                selectsRange
+                inline
+              />
+              <button onClick={confirmDates} className="confirm-dates-button">Select Dates</button>
+            </div>
+            {showBookingForm && (
+              <form onSubmit={handleBookingSubmission} className="booking-form">
+                <input type="text" placeholder="Your Name" onChange={e => { /* your handler here */ }} required />
+                <input type="email" placeholder="Your Email" onChange={e => { /* your handler here */ }} required />
+                <button type="submit" className="submit-booking-button">Save Booking</button>
+              </form>
+            )}
+          </>
+        ) : (
+          <button onClick={() => handleBookRoom(room.id)} className="book-now-button">Book Now</button>
+        )}
+      </div>
+    </div>
+  ));
+  
 
   return (
     <div className="booking-page">
-      {/* Navigation Bar */}
       <nav className="navigation-bar">
-        {/* Add navigation links, currency selector, user account access, etc. */}
+        {/* Navigation content */}
+        {/* <a href="/">Home</a>
+        <a href="/about">About Us</a>
+        <a href="/contact">Contact</a>
+        <a href="/login">Login</a> */}
       </nav>
 
-      {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
           <h1>Discover Your Perfect Stay</h1>
-          <p>Find the best hotels and resorts for your next vacation.</p>
+          <p>Explore our hotel's exquisite rooms and gourmet dining experiences for your next luxurious escape..</p>
           <form onSubmit={handleSubmit} className="search-form">
-            {/* Input fields for location, check-in/out dates, guests */}
-            {/* Add appropriate input elements and labels here */}
+            {/* Input fields */}
+            {/* <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleInputChange} />
+            <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleInputChange} /> */}
             <button type="submit">Search</button>
           </form>
         </div>
-        {/* Placeholder hero image */}
+        <img src="https://images.pexels.com/photos/2417842/pexels-photo-2417842.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Hero" className="hero-image" />
+      </section>
+      {bookingSuccess && <SuccessMessage />}
+      <section className="available-rooms" id="available-rooms-section">
+  <h2>Available Rooms</h2>
+  <button onClick={handleFetchRooms}>Fetch Available Rooms</button>
+  <div className="room-grid">
+    {availableRooms.map((room) => (
+      <div key={room.id} className="room-card">
         <img
-          src="https://images.pexels.com/photos/2417842/pexels-photo-2417842.jpeg?auto=compress&cs=tinysrgb&w=600"
-          alt="Hero"
-          className="hero-image"
+          src={`${API_URL}/${room.image_url}`}
+          alt={room.category}
+          className="room-image"
         />
-      </section>
-
-      {/* Room Categories Section */}
-      <section className="room-categories">
-        {/* Single room category */}
-        <div className="room-category">
-          <img
-            src="https://media.istockphoto.com/id/627892060/photo/hotel-room-suite-with-view.jpg?b=1&s=612x612&w=0&k=20&c=lm2XpJ41RHFwgVSmmLQyYMU_vCYy69jrBO8TmAYYgt0="
-            alt="Single Room"
-            className="room-image"
-          />
-          <h2>Single Room</h2>
-          <p>Cozy single room with a view.</p>
-          <p>Starting from $100/night</p>
-          <button>Select Room</button>
+        <div className="room-details">
+          <h2>{room.category}</h2>
+          <p>Style: {room.style}</p>
+          <p>Occupancy: {room.occupancy}</p>
+          <p>Size: {room.size}</p>
+          <p>Bed Type: {room.bed_type}</p>
+          <p>Price: {room.price}</p>
+          
+          {bookingRoomId === room.id ? (
+            <>
+              <div className="date-picker-container">
+                <DatePicker
+                  selected={startDate}
+                  onChange={handleDateChange}
+                  startDate={startDate}
+                  endDate={endDate}
+                  selectsRange
+                  inline
+                />
+                <button
+                  onClick={confirmDates}
+                  className="confirm-dates-button"
+                >
+                  Select Dates
+                </button>
+              </div>
+              {showBookingForm && (
+                <form onSubmit={handleBookingSubmission} className="booking-form">
+                  <input
+                    type="text"
+                    placeholder="Your Name"
+                    onChange={(e) => handleInputChange(e, 'name')}
+                    required
+                  />
+                  <input
+                    type="email"
+                    placeholder="Your Email"
+                    onChange={(e) => handleInputChange(e, 'email')}
+                    required
+                  />
+                  <button type="submit" className="submit-booking-button">
+                    Save Booking
+                  </button>
+                </form>
+              )}
+            </>
+          ) : (
+            <button onClick={() => handleBookRoom(room.id)} className="book-now-button">
+              Book Now
+            </button>
+          )}
         </div>
-        {/* Repeat similar blocks for other room categories */}
-      </section>
+      </div>
+    ))}
+  </div>
+</section>
 
-      {/* Special Offers Section */}
-      <section className="special-offers">
-        {/* Special offer 1 */}
-        <div className="offer">
-          <img
-            src="https://images.pexels.com/photos/3316926/pexels-photo-3316926.jpeg?auto=compress&cs=tinysrgb&w=600"
-            alt="Special Offer 1"
-            className="offer-image"
-          />
-          <h2>Special Offer 1</h2>
-          <p>Stay longer and save big!</p>
-          <button>Book Now</button>
-        </div>
-        {/* Repeat similar blocks for other special offers */}
-      </section>
+      
 
-      {/* Property Type Carousel */}
-      <section className="property-type-carousel">
-        {/* Carousel with property type cards */}
-        {/* Each card should have an image, label, and description */}
-      </section>
-
-      {/* Unique Properties Showcase */}
-      <section className="unique-properties">
-        {/* Showcase unique properties with images, names, ratings, and descriptions */}
-        {/* Include a variety of unique stays */}
-      </section>
-
-      {/* Loved by Guests Section */}
-      <section className="loved-by-guests">
-        <h2>Loved by Guests</h2>
-        {/* Display highly-rated homes or rooms with testimonials/reviews */}
-      </section>
-
-      {/* Destination Highlights Section */}
-      <section className="destination-highlights">
-        <h2>Destination Highlights</h2>
-        <div className="destination-list">
-          {/* Destination 1 */}
-          <div className="destination">
-            <img
-              src="https://images.pexels.com/photos/2319428/pexels-photo-2319428.jpeg?auto=compress&cs=tinysrgb&w=600"
-              alt="Destination 1"
-              className="destination-image"
-            />
-            <h3>Jersey</h3>
-          </div>
-          {/* Repeat similar blocks for other destinations */}
-        </div>
-      </section>
-
-      {/* Subscription Section */}
       <section className="subscription-section">
-        <h2>Subscribe for Exclusive Offers</h2>
-        <p>Don't miss out on our latest deals and promotions. Subscribe now!</p>
-        <form onSubmit={handleSubmit} className="subscription-form">
-          {/* Input field for email */}
-          {/* Add appropriate input element and label here */}
-          <button type="submit">Subscribe</button>
-        </form>
+        {/* Subscription content */}
       </section>
 
-      {/* Footer */}
+      
+
+
       <footer className="footer">
-        {/* Include footer links, company information, and additional resources */}
+        <div>
+          <h3>About Us</h3>
+          <p>Learn more about our company and values.</p>
+        </div>
+        <div>
+          <h3>Contact</h3>
+          <p>Have questions? Feel free to reach out.</p>
+        </div>
+        <div>
+          <h3>Follow Us</h3>
+          <p>Connect with us on social media.</p>
+        </div>
       </footer>
     </div>
   );

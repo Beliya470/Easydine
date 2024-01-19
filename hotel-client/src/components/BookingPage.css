@@ -36,13 +36,15 @@
   
   /* Hero Section */
   .hero-section {
-    background-image: url('../assets/pexels-vincent-rivaud-2363807.jpg');
-    background-size: cover;
-    background-position: center;
+    background-image: url('https://media.istockphoto.com/id/1454697447/photo/black-luxury-modern-retro-style-master-bedroom.jpg?b=1&s=612x612&w=0&k=20&c=54vRfrGAplKEBBv4zlbdRdomAoWm5nQiRs7LhJcFDwI=');
+    background-size: 100% 100%;
+    background-position: top;
     text-align: center;
     padding: 50px 0;
     color: #fff;
-  }
+    height: 1000px; /* Adjust the height as needed */
+}
+
   
   .hero-content {
     max-width: 600px;
@@ -54,6 +56,11 @@
     margin-bottom: 20px;
   }
   
+  .hero-image {
+    max-height: 500px; /* Adjust the max-height as needed */
+    width: 60%; /* Ensure the image stretches to the container's width */
+    object-fit: cover; /* Maintain image aspect ratio while covering the container */
+}
   .search-form {
     display: flex;
     justify-content: center;
@@ -77,32 +84,91 @@
     font-weight: bold;
     cursor: pointer;
   }
+ 
   
+
+  /* Add this CSS to style the room grid */
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Three columns */
+  gap: 20px; /* Gap between items */
+}
+
+.room-card {
+  /* Additional styling for each room card, if needed */
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Adjust styles as needed for room images and descriptions */
+.room-image {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.room-details {
+  text-align: left;
+}
+
+/* Add styles for room descriptions (category and style) */
+.room-details h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.room-details p {
+  font-size: 1em;
+  margin-bottom: 15px;
+}
+
+/* Additional styling for booking and date picker components, if needed */
+
   /* Room Categories Section */
-  .room-categories {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    background: #f7f7f7;
-    padding: 50px 0;
-  }
-  
-  .room-category {
-    text-align: center;
+.room-categories {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+  background: #f7f7f7;
+  padding: 50px 0;
+}
+
+.room-category {
+  text-align: center;
+  padding: 20px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.room-category img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+
+  .success-message {
     padding: 20px;
-    flex-basis: calc(33.333% - 40px);
-    margin: 20px;
-    background: #fff;
+    margin: 20px 0;
+    border: 1px solid green;
+    background-color: #e9ffe9;
+    color: green;
+    text-align: center;
     border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
   }
   
-  .room-category img {
-    width: 100%;
-    height: auto;
-    margin-bottom: 20px;
-    border-radius: 5px;
+
+
+
+  .date-picker-container {
+    margin-top: 10px;
   }
+  
   
   .room-category h2 {
     font-size: 1.5em;
