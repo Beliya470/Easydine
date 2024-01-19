@@ -114,6 +114,7 @@ function RoomServicePage() {
             checked={!!selectedItems[item.id]}
             onChange={() => handleCheckboxChange(item.id)}
           />
+          <img src={item.image_url} alt={item.name} style={{ maxWidth: '100px', maxHeight: '100px' }} />
           {item.name} - ${item.price}
         </div>
       ))}

@@ -18,10 +18,11 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-    CORS(app)
+    CORS(app, supports_credentials=True)
+    # CORS(app)
     db.init_app(app)
     login_manager.init_app(app)
-    from models import User, HotelBooking, Order, SpecialOrder, Feedback, RoomServiceItem
+    from models import User, HotelBooking, Room, Order, SpecialOrder, Feedback, RoomServiceItem
 
 
     # Register Blueprints and other app configurations
@@ -35,6 +36,9 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
 
+
+
+
     # Routes
     @app.route('/')
     @login_required
@@ -43,59 +47,118 @@ def create_app():
         return render_template('index.html', bookings=bookings)
     
 
-
-
-    @app.route('/login', methods=['POST'])
-    def login():
-        if request.is_json:  # Check if the request contains JSON data
-            data = request.get_json()
-            username = data.get('username')
-            password = data.get('password')
-        else:
-            username = request.form.get('username')
-            password = request.form.get('password')
-
-        if not username or not password:
-            return jsonify({'success': False, 'error': 'Invalid request'}), 400
-
-    # Query your database for the user
-        user = User.query.filter_by(username=username).first()
-
-    # If user exists and password is correct
-        if user and check_password_hash(user.password, password):
-           
-        # Use Flask-Login to log in the user and start their session
-           login_user(user)
-           print(f"User logged in: {user.username}, Admin status: {user.is_admin}")  # Add this line
-        # Return a JSON response with success and admin status
-           return jsonify({'success': True, 'is_admin': user.is_admin}), 200
-
-    # If the login credentials are incorrect, return an error
-        return jsonify({'success': False, 'error': 'Invalid username or password'}), 401
-
-
+    @app.route('/user', methods=['GET'])
+    @login_required
+    def get_user_info():
+        # Return user information in response
+        user_data = {
+            'id': current_user.id,
+            'username': current_user.username,
+            'is_admin': current_user.is_admin,  # Include any other user data you need
+        }
+        return jsonify(user_data)
     
+
+
+
     # @app.route('/login', methods=['GET', 'POST'])
     # def login():
-    #     data = request.get_json() 
-    #     form = LoginForm()  # LoginForm is a FlaskForm with username and password fields
-    #     if form.validate_on_submit():
-    #         # Query your database for the user
-    #         user = User.query.filter_by(username=form.username.data).first()
-    #         # If user exists and password is correct
-    #         if user and check_password_hash(user.password, form.password.data):
-    #             # Use Flask-Login to log in the user and start their session
-    #             login_user(user)
-    #             print(f"User logged in: {user.username}, Admin status: {user.is_admin}")  # Add this line
-    #             # Redirect to the index page if the user is authenticated
-    #             return jsonify({'success': True, 'is_admin': user.is_admin}), 200
-    #         else:
-    #             # If the login credentials are incorrect, return an error
-    #             return jsonify({'success': False, 'error': 'Invalid username or password'}), 401
-    #     # If the request is a GET or the form is not valid, render the login template
-    #     return render_template('login.html', form=form)
-    
+    #     if request.method == 'GET':
+    #         form = LoginForm()
+    #         return render_template('login.html', form=form)
 
+    #     if request.method == 'POST':
+    #         if request.is_json:
+    #             data = request.get_json()
+    #             username = data.get('username')
+    #             password = data.get('password')
+    #         else:
+    #             form = LoginForm(request.form)
+    #             if form.validate():
+    #                 username = form.username.data
+    #                 password = form.password.data
+    #             else:
+    #                 return render_template('login.html', form=form)
+
+    #         user = User.query.filter_by(username=username).first()
+    #         if user and check_password_hash(user.password, password):
+    #             login_user(user)
+    #             return jsonify({'success': True, 'is_admin': user.is_admin, 'user_id': user.id}), 200
+
+    #         return jsonify({'success': False, 'error': 'Invalid username or password'}), 401
+
+    #     # Additional routes and logic as required
+
+
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        if request.method == 'GET':
+            form = LoginForm()
+            return render_template('login.html', form=form)
+
+        if request.method == 'POST':
+            if request.is_json:
+                data = request.get_json()
+                username = data.get('username')
+                password = data.get('password')
+            else:
+                form = LoginForm(request.form)
+                if form.validate():
+                    username = form.username.data
+                    password = form.password.data
+                else:
+                    return render_template('login.html', form=form)
+
+            user = User.query.filter_by(username=username).first()
+            if user and check_password_hash(user.password, password):
+                login_user(user)
+                return jsonify({'success': True, 'is_admin': user.is_admin, 'user_id': user.id}), 200
+
+            return jsonify({'success': False, 'error': 'Invalid username or password'}), 401
+
+        # @app.route('/profile/<int:user_id>', methods=['GET', 'PUT'])
+        # @login_required
+        # def profile(user_id):
+        #     if current_user.id != user_id and not current_user.is_admin:
+        #         return jsonify({'message': 'Unauthorized'}), 403
+        #     user = User.query.get_or_404(user_id)
+        #     if request.method == 'GET':
+        #         pass
+        #     elif request.method == 'PUT':
+        #         pass
+        
+            user = User.query.get_or_404(user_id)
+            if request.method == 'GET':
+                user_data = {
+                    'username': user.username,
+                    'email': user.email,  # Assuming email field exists in User model
+                    'phone_number': user.phone_number,  # Assuming phone_number field in User model
+                    'orders': [order.to_dict() for order in user.orders]  # Assuming User has a relationship with Order
+                }
+                return jsonify(user_data), 200
+
+            if request.method == 'PUT':
+                data = request.get_json()
+                user.email = data.get('email', user.email)
+                user.phone_number = data.get('phone_number', user.phone_number)
+                db.session.commit()
+                return jsonify({'message': 'Profile updated successfully'}), 200
+
+            return jsonify({'message': 'Invalid request method'}), 405
+
+        @app.route('/delete-account/<int:user_id>', methods=['DELETE'])
+        @login_required
+        def delete_account(user_id):
+            if current_user.id != user_id:
+                return jsonify({'message': 'Unauthorized'}), 403
+
+            user = User.query.get_or_404(user_id)
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify({'message': 'Account deleted successfully'}), 200
+
+        # Additional routes and logic as required    
+   
     @app.route('/logout')
     @login_required
     def logout():
@@ -108,32 +171,36 @@ def create_app():
     @app.route('/register', methods=['POST'])
     def register():
         data = request.get_json()
+        print("Received data:", data) 
         username = data.get('username')
         password = data.get('password')
-        is_admin = data.get('is_admin', False) 
+        # is_admin = data.get('is_admin', False) 
+        # is_admin = data.get('is_admin', False) == 'true'
+        is_admin = data.get('is_admin', False)
+
+        # if isinstance(is_admin, str) and is_admin.lower() == 'true':
+        #     is_admin = True
+        # else:
+        #     is_admin = False
         if not username or not password:
             return jsonify({'success': False, 'message': 'Missing username or password'}), 400
         if User.query.filter_by(username=username).first():
             return jsonify({'success': False, 'message': 'Username already exists'}), 409
         hashed_password = generate_password_hash(password)
-        new_user = User(username=username, password=hashed_password)
+        # new_user = User(username=username, password=hashed_password)
+        new_user = User(username=username, password=hashed_password, is_admin=is_admin)
+
         db.session.add(new_user)
         db.session.commit()
         # return jsonify({'success': True, 'username': new_user.username}), 201
         return jsonify({'success': True, 'username': new_user.username, 'is_admin': new_user.is_admin}), 201
     
 
-    # @app.route('/register', methods=['GET', 'POST'])
-    # def register():
-    #     form = RegistrationForm()
-    #     if form.validate_on_submit():
-    #         hashed_password = generate_password_hash(form.password.data, method='sha256')
-    #         new_user = User(username=form.username.data, password=hashed_password)
-    #         db.session.add(new_user)
-    #         db.session.commit()
-    #         return redirect(url_for('login'))
-    #     return render_template('register.html', form=form)
-
+   
+    
+    
+    
+    
     @app.route('/book', methods=['GET', 'POST'])
     @login_required
     def book():
@@ -160,6 +227,26 @@ def create_app():
     def view_booking(booking_id):
         booking = HotelBooking.query.get_or_404(booking_id)
         return render_template('view_booking.html', booking=booking)
+    
+    
+    
+    # @app.route('/booking', methods=['GET'])
+    # def booking():
+    #     available_rooms = Room.query.all()  # Query the database to get available rooms
+    #     return jsonify([room.to_dict() for room in available_rooms])
+    
+
+
+
+
+    @app.route('/booking', methods=['GET'])
+    def booking():
+        try:
+            available_rooms = Room.query.all()  # Query the database to get available rooms
+            return jsonify([room.to_dict() for room in available_rooms])
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
 
     @app.route('/edit/<int:booking_id>', methods=['GET', 'POST'])
     @login_required
@@ -183,62 +270,76 @@ def create_app():
         db.session.commit()
         return redirect(url_for('index'))
 
-    # Order Routes
-    # Special Order Route
-    @app.route('/special-order', methods=['GET', 'POST'])
+
+
+    # Define routes
+    @app.route('/special-order', methods=['POST'])
     @login_required
     def place_special_order():
-        form = SpecialOrderForm()  # Ensure this form is defined in your forms.py
-        if form.validate_on_submit():
+        # Parsing JSON data from the request
+        data = request.get_json()
+
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+
+        user_id = current_user.id
+        special_request = data.get('request')
+
+        if not special_request:
+            return jsonify({'error': 'No special request provided'}), 400
+
+        try:
             special_order = SpecialOrder(
-                user_id=current_user.id,
-                request=form.request.data
+                user_id=user_id,
+                request=special_request
             )
             db.session.add(special_order)
             db.session.commit()
-            flash('Your special request has been submitted successfully.')
-            return redirect(url_for('index'))
-        return render_template('place_special_order.html', form=form)
+            return jsonify({'success': 'Your special request has been submitted successfully.'})
+        except Exception as e:
+            return jsonify({'error': 'An error occurred while processing your request: {}'.format(e)}), 500
+
+    # ... (other routes and configurations)
+    # Food Order Route
+    # @app.route('/room-service/order', methods=['GET', 'POST'])
+    # @login_required
+    # def place_food_order():
+    #     form = FoodOrderForm()
+    #     if form.validate_on_submit():
+    #         order = Order(
+    #             user_id=current_user.id,
+    #             details=form.details.data,
+    #             order_type='Food'
+    #         )
+    #         db.session.add(order)
+    #         db.session.commit()
+    #         flash('Your food order has been received and is being processed.')
+    #         return redirect(url_for('order_status', order_id=order.id))
+    #     return render_template('place_food_order.html', form=form)
+        
+
 
     @app.route('/room-service/order', methods=['POST'])
-    @login_required
     def place_room_service_order():
-        form = RoomServiceOrderForm()
-        if form.validate_on_submit():
-            item_id = form.item_id.data
-            item = RoomServiceItem.query.get(item_id)
-
-            if item:
-                order = Order(
-                    user_id=current_user.id,
-                    details=f"Room Service: {item.name}\n{form.details.data}",
-                    order_type='Room Service'
-                )
-                db.session.add(order)
-                db.session.commit()
-                flash('Your room service order has been placed successfully.')
-                return redirect(url_for('index'))
-            else:
-                flash('Invalid room service item selected.')
-        return render_template('place_room_service_order.html', form=form)
-
-    # Food Order Route
-    @app.route('/food/order', methods=['GET', 'POST'])
-    @login_required
-    def place_food_order():
-        form = FoodOrderForm()
-        if form.validate_on_submit():
-            order = Order(
-                user_id=current_user.id,
-                details=form.details.data,
-                order_type='Food'
-            )
+        data = request.json
+        user_id = data.get('user_id')  # Assuming 'user_id' is sent from the frontend
+        items = data.get('items', []) 
+        if not user_id:
+            return jsonify({'message': 'User ID is missing'}), 400 
+        # Manually verify the user's identity
+        for item in items:
+            item_id = item.get('id')
+            if item_id is None:
+                continue  # Skip if item ID is not provided
+            room_service_item = RoomServiceItem.query.get(item_id)
+            if room_service_item is None:
+                continue  # Skip if item not found
+            order = Order(user_id=user_id, details=item['name'], order_type='Food')
             db.session.add(order)
-            db.session.commit()
-            flash('Your food order has been received and is being processed.')
-            return redirect(url_for('order_status', order_id=order.id))
-        return render_template('place_food_order.html', form=form)
+        db.session.commit()
+        return jsonify({'message': 'Order placed successfully'})     
 
+          
     # Order Status Route
     @app.route('/order/status/<int:order_id>', methods=['GET'])
     @login_required
@@ -253,16 +354,46 @@ def create_app():
 
         return render_template('order_status.html', order=order, status=status)
 
-    # Profile Management Route
-    @app.route('/profile', methods=['GET', 'POST'])
+
+
+   
+    
+    # @app.route('/profile/<int:user_id>', methods=['GET', 'POST', 'PUT'])
+    @app.route('/profile/<int:user_id>', methods=['GET', 'PUT'])
     @login_required
-    def profile():
-        form = UpdateProfileForm()  # Assume this form is defined
-        if form.validate_on_submit():
-            # Update user profile logic
-            flash('Profile updated successfully.')
-            return redirect(url_for('profile'))
-        return render_template('profile.html', form=form)
+    def profile(user_id):
+        user = User.query.get_or_404(user_id)
+        # Ensure the current user is the one requested
+        if current_user.id != user_id:
+            return jsonify({'message': 'Access denied'}), 403
+
+        
+        
+        
+        if request.method == 'GET':
+            user_data = {
+                'username': current_user.username,
+                'email': user.email,
+                'phone_number': user.phone_number,
+                'orders': [order.serialize() for order in user.orders] # serialize method to convert to dict
+        
+                # Add other user fields as needed
+            }
+            return jsonify(user_data), 200
+
+        # Handle PUT request for profile updates
+        # ...
+        if request.method == 'PUT':
+             data = request.get_json()
+             user.username = data.get('username', user.username)
+             user.email = data.get('email', user.email)
+             user.phone_number = data.get('phone_number', user.phone_number)
+        # Update additional fields as necessary
+             db.session.commit()
+             return jsonify({'message': 'Profile updated successfully'}), 200
+
+        else:
+            return jsonify({'message': 'Invalid request method'}), 405
 
     # Feedback Route
     @app.route('/feedback', methods=['GET', 'POST'])
