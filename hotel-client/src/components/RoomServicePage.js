@@ -9,17 +9,53 @@ const roomServicePageStyles = {
     margin: '0 auto',
     padding: '20px',
     textAlign: 'center',
-    fontFamily: 'Arial, sans-serif', // Add your preferred font-family
+    fontSize: '1.5rem',
+    fontFamily: '"Brush Script MT", cursive',  // Add your preferred font-family
   },
   heading: {
     fontSize: '2rem',
     marginBottom: '20px',
     color: '#007bff', // Adjust the color
+    fontFamily: '"Brush Script MT", cursive', // Sets a cursive, more elegant font-family
+    fontSize: '2.5rem', // Increases font size for better readability
+    // color: '#5D4037', // Sets a deep, rich color for the text
+    marginLeft: '15px', // Adds spacing between the image and the text
+    display: 'inline-block', // Ensures the text is inline with the image
+    verticalAlign: 'middle', // Aligns text vertically with the image
   },
+  image: {
+    width: '200px',     // Sets a fixed width for the images
+    height: '150px',    // Sets a fixed height for the images
+    objectFit: 'cover', // Ensures the image covers the area, maintaining aspect ratio
+    padding: '5px',     // Adds padding around the image
+    border: '1px solid #ddd', // Adds a border around the image
+    borderRadius: '10px', // Rounds the corners of the border
+    background: '#f8f8f8', // Sets a light grey background color
+    boxShadow: '0 2px 5px rgba(0,0,0,0.1)', // Adds a subtle shadow effect
+  },
+
+  itemName: {
+    fontFamily: '"Brush Script MT", cursive', // Sets a cursive, more elegant font-family
+    fontSize: '1.2rem', // Adjusts font size for better readability
+    color: '#5D4037', // Sets a deep, rich color for the text
+    marginLeft: '15px', // Adds spacing between the image and the text
+    display: 'block', // Ensures the text is displayed as a block to align correctly
+    verticalAlign: 'middle', // Aligns text vertically with the image
+    textAlign: 'left', // Aligns text to the left
+  },
+
+  orderItem: {
+    display: 'flex', // Uses flexbox for alignment
+    alignItems: 'left', // Aligns items vertically in the center
+    justifyContent: 'flex-start', // Aligns content to the start (left)
+    marginBottom: '10px', // Adds space below each order item
+    // ... existing styles
+  },
+  
   form: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'left',
   },
   select: {
     width: '100%',
@@ -53,10 +89,10 @@ const roomServicePageStyles = {
     marginTop: '40px',
   },
   orderItem: {
-    marginBottom: '10px',
-    padding: '10px',
-    border: '1px solid #ccc',
-    borderRadius: '5px',
+    display: 'flex', // Uses flexbox for alignment
+    alignItems: 'left', // Aligns items vertically in the center
+    justifyContent: 'flex-start', // Aligns content to the start (left)
+    marginBottom: '10px', // Adds space below each order item
   },
 };
 
@@ -114,7 +150,12 @@ function RoomServicePage() {
             checked={!!selectedItems[item.id]}
             onChange={() => handleCheckboxChange(item.id)}
           />
-          <img src={item.image_url} alt={item.name} style={{ maxWidth: '100px', maxHeight: '100px' }} />
+          {/* <img src={`${API_URL}/${item.image_url}`} alt={item.name} /> */}
+          <img src={`${API_URL}/${item.image_url}`} alt={item.name} style={roomServicePageStyles.image} />
+
+          {/* <img src={`${API_URL}/${room.image_url.split('static/').pop()}`} alt={room.category} className="room-image" /> */}
+
+          {/* <img src={`${API_URL}/${item.image_url.split('static/').pop()}`} alt={item.name} /> */}
           {item.name} - ${item.price}
         </div>
       ))}

@@ -45,16 +45,16 @@ with app.app_context():
 
     # Create 15 meals for room service
     meal_descriptions = [
-        ("Sunny Italian Pizza", "A classic thin crust pizza topped with sun-dried tomatoes, fresh mozzarella, basil, and a drizzle of extra virgin olive oil.", 'food/pexels-christina-petsos-11568775.jpg'),
-        ("Mediterranean Grilled Chicken Salad", "Grilled chicken breast served on a bed of mixed greens with feta cheese, kalamata olives, and a light lemon-oregano dressing.", 'food/pexels-sakina-mammadli-15911841.jpg'),
-        ("Spicy Thai Green Curry", "Aromatic Thai green curry with bamboo shoots, bell peppers, and tender chicken pieces, served with jasmine rice.", 'food/pexels-eaksit-sangdee-15797986.jpg'),
-        ("Japanese Sushi Platter", "An assortment of fresh sashimi, nigiri, and rolls featuring tuna, salmon, and avocado, served with wasabi and pickled ginger.", 'food/pexels-sebastian-coman-photography-3475617.jpg'),
-        ("Moroccan Tagine", "Slow-cooked lamb tagine with apricots, almonds, and fragrant spices, served with fluffy couscous.", 'food/pexels-enesfi̇lm-8029190.jpg'),
-        ("Mexican Beef Tacos", "Soft corn tortillas filled with seasoned beef, topped with salsa, guacamole, and fresh cilantro.", 'food/pexels-hana-brannigan-3642718.jpg'),
-        ("Indian Butter Chicken", "Creamy tomato curry with tender pieces of chicken, served with basmati rice and naan bread.", 'food/pexels-loren-castillo-9218754.jpg'),
-        ("French Coq au Vin", "Classic French stew with chicken braised in red wine with mushrooms and pearl onions, served with creamy mashed potatoes.", 'food/pexels-valeria-boltneva-10038705.jpg'),
-        ("Italian Seafood Risotto", "Creamy Arborio rice cooked with a medley of seafood, white wine, and a touch of saffron.", 'food/pexels-dana-tentis-725997.jpg'),
-        ("American BBQ Ribs", "Smoked and slow-cooked pork ribs glazed with a sweet and tangy BBQ sauce, served with cornbread and coleslaw.", 'food/pexels-valeria-boltneva-16474897.jpg'),
+        ("Sunny Italian Pizza", "A classic thin crust pizza topped with sun-dried tomatoes, fresh mozzarella, basil, and a drizzle of extra virgin olive oil.", 'static/pexels-christina-petsos-11568775.jpg'),
+        ("Mediterranean Grilled Chicken Salad", "Grilled chicken breast served on a bed of mixed greens with feta cheese, kalamata olives, and a light lemon-oregano dressing.", 'static/pexels-sakina-mammadli-15911841.jpg'),
+        ("Spicy Thai Green Curry", "Aromatic Thai green curry with bamboo shoots, bell peppers, and tender chicken pieces, served with jasmine rice.", 'static/pexels-eaksit-sangdee-15797986.jpg'),
+        ("Japanese Sushi Platter", "An assortment of fresh sashimi, nigiri, and rolls featuring tuna, salmon, and avocado, served with wasabi and pickled ginger.", 'static/pexels-sebastian-coman-photography-3475617.jpg'),
+        ("Moroccan Tagine", "Slow-cooked lamb tagine with apricots, almonds, and fragrant spices, served with fluffy couscous.", 'static/pexels-enesfi̇lm-8029190.jpg'),
+        ("Mexican Beef Tacos", "Soft corn tortillas filled with seasoned beef, topped with salsa, guacamole, and fresh cilantro.", 'static/pexels-hana-brannigan-3642718.jpg'),
+        ("Indian Butter Chicken", "Creamy tomato curry with tender pieces of chicken, served with basmati rice and naan bread.", 'static/pexels-loren-castillo-9218754.jpg'),
+        ("French Coq au Vin", "Classic French stew with chicken braised in red wine with mushrooms and pearl onions, served with creamy mashed potatoes.", 'static/pexels-valeria-boltneva-10038705.jpg'),
+        ("Italian Seafood Risotto", "Creamy Arborio rice cooked with a medley of seafood, white wine, and a touch of saffron.", 'static/pexels-dana-tentis-725997.jpg'),
+        ("American BBQ Ribs", "Smoked and slow-cooked pork ribs glazed with a sweet and tangy BBQ sauce, served with cornbread and coleslaw.", 'static/pexels-valeria-boltneva-16474897.jpg'),
     ]
 
     for name, description, image_url in meal_descriptions:

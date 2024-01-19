@@ -144,8 +144,6 @@ const handleBookingSubmission = () => {
       {/* <img src={`${API_URL}${room.image_url}`} alt={room.category} className="room-image" /> */}
       <img src={`${API_URL}/${room.image_url.split('static/').pop()}`} alt={room.category} className="room-image" />
 
-
-
       {/* <img src={`${API_URL}/static/${room.image_url}`} alt={room.category} className="room-image" /> */}
       <div className="room-details">
         <h2>{room.category}</h2>
