@@ -5,3 +5,12 @@ WTForms
 Flask-Login
 stripe
 flask-cors 
+PyJWT
+pip install flask-login==0.5.0
+pip install flask-login==0.4.1
+pip uninstall Flask flask-login
+pip install Flask==2.0.2 flask-login==0.5.0
+
+
+
+

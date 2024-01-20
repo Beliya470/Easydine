@@ -4,11 +4,16 @@ import axios from 'axios';
 function AdminDashboard() {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
+    
 
     useEffect(() => {
         async function fetchBookings() {
             try {
-                const response = await axios.get('/booking');
+                const response = await axios.get('/booking', {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem('jwt_token')}`
+                    }
+                });
                 setBookings(response.data);
                 setLoading(false);
             } catch (error) {
@@ -16,9 +21,10 @@ function AdminDashboard() {
                 setLoading(false);
             }
         }
-
+    
         fetchBookings();
     }, []);
+    
 
     if (loading) {
         return <div>Loading...</div>;

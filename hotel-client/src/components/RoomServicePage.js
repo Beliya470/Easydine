@@ -106,14 +106,17 @@ function RoomServicePage() {
 
   const fetchRoomServiceItems = async () => {
     try {
-      const response = await axios.get(`${API_URL}/room-service/items`);
-
-      // const response = await axios.get('${API_URL}/room-service/items'); // Ensure this matches your API endpoint
+      const response = await axios.get(`${API_URL}/room-service/items`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('jwt_token')}`
+        }
+      });
       setRoomServiceItems(response.data);
     } catch (error) {
       console.error('Error fetching room service items:', error);
     }
   };
+  
 
   const handleCheckboxChange = (itemId) => {
     setSelectedItems({
@@ -124,19 +127,27 @@ function RoomServicePage() {
 
   const handleSubmit = async () => {
     const orderedItems = roomServiceItems.filter(item => selectedItems[item.id]);
-    const userId = sessionStorage.getItem('user_id'); // Retrieve user_id from session storage
+    const userId = sessionStorage.getItem('user_id');
     if (!userId) {
         alert('Please log in to place an order.');
         return;
     }
     try {
-        await axios.post(`${API_URL}/room-service/order`, { user_id: userId, items: orderedItems }, { withCredentials: true });
+        await axios.post(`${API_URL}/room-service/order`, 
+          { items: orderedItems }, 
+          {
+            headers: {
+              Authorization: `Bearer ${sessionStorage.getItem('jwt_token')}`
+            }
+          }
+        );
         alert('Order placed successfully!');
         setSelectedItems({});
     } catch (error) {
         console.error('Error placing order:', error);
     }
-};
+  };
+  
 
 
   return (

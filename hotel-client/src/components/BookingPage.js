@@ -53,26 +53,42 @@ const SuccessMessage = () => (
   </div>
 );
 
+const handleBookingSubmission = async (event) => {
+  event.preventDefault();
 
-
-
-
-
-const handleBookingSubmission = () => {
-  // Here you would send the booking information to your server
-  // For now, we'll just log it to the console
+  const userId = sessionStorage.getItem('user_id'); // Retrieve user ID from storage
   const bookingDetails = {
-    // userId: /* your user's id */,
+    userId: userId,
     roomId: bookingRoomId,
-    checkIn: startDate,
-    checkOut: endDate,
-    // any other booking details
+    checkIn: startDate.toISOString(),
+    checkOut: endDate.toISOString(),
   };
-  console.log(bookingDetails);
 
-  // Set the success message to true
-  setBookingSuccess(true);
+  // Log the booking details to the console
+  console.log('Booking Details:', bookingDetails);
+
+  try {
+    const response = await fetch(`${API_URL}/make-booking`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${sessionStorage.getItem('jwt_token')}`,
+      },
+      body: JSON.stringify(bookingDetails)
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      setBookingSuccess(true);
+    } else {
+      console.error('Booking error:', data);
+    }
+  } catch (error) {
+    console.error('Error submitting booking:', error);
+  }
 };
+
+
 
 
 
@@ -107,12 +123,20 @@ const handleBookingSubmission = () => {
   };
 
   const API_URL = 'http://localhost:5000';
-  const handleFetchRooms = () => {
-    fetch(`${API_URL}/booking`) // Correct use of template literals
-      .then(response => response.json())
-      .then(data => setAvailableRooms(data))
-      .catch(error => console.error('Error fetching available rooms:', error));
-  };
+  // In BookingPage.js
+const handleFetchRooms = () => {
+  const token = sessionStorage.getItem('jwt_token'); // Retrieve token from storage
+  fetch(`${API_URL}/booking`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(response => response.json())
+    .then(data => setAvailableRooms(data))
+    .catch(error => console.error('Error fetching available rooms:', error));
+};
+
+  
   // const handleFetchRooms = () => {
   //   fetch(`${API_URL}/booking`)
   //     .then((response) => {
@@ -203,6 +227,7 @@ const handleBookingSubmission = () => {
       {bookingSuccess && <SuccessMessage />}
       <section className="available-rooms" id="available-rooms-section">
   <h2>Available Rooms</h2>
+  
   <button onClick={handleFetchRooms}>Fetch Available Rooms</button>
   <div className="room-grid">
     {availableRooms.map((room) => (
@@ -231,32 +256,15 @@ const handleBookingSubmission = () => {
                   selectsRange
                   inline
                 />
-                <button
-                  onClick={confirmDates}
-                  className="confirm-dates-button"
-                >
-                  Select Dates
+                <button onClick={() => setBookingRoomId(null)} className="cancel-button">
+                Cancel
                 </button>
+                <button onClick={handleBookingSubmission} className="confirm-dates-button">
+                Confirm Booking
+                </button>
+                
               </div>
-              {showBookingForm && (
-                <form onSubmit={handleBookingSubmission} className="booking-form">
-                  <input
-                    type="text"
-                    placeholder="Your Name"
-                    onChange={(e) => handleInputChange(e, 'name')}
-                    required
-                  />
-                  <input
-                    type="email"
-                    placeholder="Your Email"
-                    onChange={(e) => handleInputChange(e, 'email')}
-                    required
-                  />
-                  <button type="submit" className="submit-booking-button">
-                    Save Booking
-                  </button>
-                </form>
-              )}
+              
             </>
           ) : (
             <button onClick={() => handleBookRoom(room.id)} className="book-now-button">

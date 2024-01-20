@@ -54,31 +54,34 @@ const specialOrderPageStyles = {
 function SpecialOrderPage() { 
   const [request, setRequest] = useState('');
   const [error, setError] = useState('');
-  const history = useNavigate();
-  const { user } = useAuth();
+  const [confirmation, setConfirmation] = useState(''); // New state for confirmation message
+  const navigate = useNavigate();
 
   const API_URL = 'http://localhost:5000/special-order';
-
-  const userId = user ? user.id : null; // Check if user is not null
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-  
-    if (!user) {
-      history('/login'); // Redirect to the login page if user is null
+    setConfirmation(''); // Reset confirmation message
+
+    const token = sessionStorage.getItem('jwt_token');
+    if (!token) {
+      navigate('/login');
       return;
     }
-  
-    try {
-      // const response = await axios.post(API_URL, { request });
-      // const response = await axios.post(API_URL, { request }, { maxRedirects: 0 });
-      const response = await axios.post(API_URL, { request, userId: user.id });
 
-  
+    try {
+      const response = await axios.post(API_URL, { request }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
       if (response.data.success) {
-        history.push('/success'); // Redirect to a success page or another page
-        // Display a success message if needed
+        setConfirmation('Your special order has been placed successfully.');
+        setTimeout(() => {
+          navigate('/'); // Redirect to home page after 3 seconds
+        }, 3000);
       } else {
         setError('Failed to place special order.');
       }
@@ -87,12 +90,12 @@ function SpecialOrderPage() {
       setError('An error occurred while placing the order.');
     }
   };
-  
 
   return (
     <div style={specialOrderPageStyles.container}>
       <h1 style={specialOrderPageStyles.heading}>Place a Special Order</h1>
       {error && <div style={specialOrderPageStyles.error}>{error}</div>}
+      {confirmation && <div style={specialOrderPageStyles.confirmation}>{confirmation}</div>}
       <form onSubmit={handleSubmit} style={specialOrderPageStyles.form}>
         <textarea
           value={request}
@@ -116,3 +119,4 @@ function SpecialOrderPage() {
 }
 
 export default SpecialOrderPage;
+

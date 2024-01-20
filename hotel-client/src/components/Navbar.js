@@ -38,7 +38,7 @@ function Navbar() {
             <Link to="/register">Register</Link>
             <Link to="/profile">Profile</Link> */}
             <Link to="/booking" style={linkStyle}>Book a Room</Link>
-            <Link to="/profile" style={linkStyle}>Profile</Link>
+            <Link to="/profile/<int:user_id>" style={linkStyle}>Profile</Link>
             {/* <Link to="/orders">View Orders</Link>
             <Link to="/feedback">Feedback</Link>
             <Link to="/admin">Admin Dashboard</Link> */}
