@@ -43,7 +43,7 @@
     background-color: #00796b;
   }
   
-  input, textarea {
+  .admin-dashboard input, textarea {
     width: 100%;
     padding: 10px;
     margin: 5px 0;
@@ -61,13 +61,30 @@
   }
   
   /* Additional styling for form inputs and buttons */
-  input[type="submit"] {
+  .admin-dashboard input[type="submit"] {
     background-color: #ff5722; /* Warm color for submit buttons */
     width: auto;
     transition: background-color 0.3s;
   }
   
-  input[type="submit"]:hover {
+  .admin-dashboard input[type="submit"]:hover {
     background-color: #e64a19;
+  }
+  
+
+  .admin-dashboard .logout-button {
+    background-color: #f44336; /* Red color for logout */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+    align-self: center;
+  }
+  
+  .admin-dashboard .logout-button:hover {
+    background-color: #d32f2f;
   }
   
