@@ -4,13 +4,13 @@ import './HomePage.css';
 // Images already imported
 import MainBanner from '../assets/pexels-elevate-1267320.jpg';
 import DiningExperience from '../assets/pexels-nadezhda-moryak-6229458.jpg';
-import RoomPreview from '../assets/pexels-vincent-rivaud-2363807.jpg';
+import RoomPreview from '../assets/pexels-capricious-wayfarer-(saptarshi)-974382.jpg';
 import Image4 from '../assets/pexels-rachel-claire-5490150.jpg';
 import Image5 from '../assets/pexels-tim-douglas-6210764.jpg';
-import Image6 from '../assets/pexels-vincent-rivaud-2363807.jpg';
-import Image7 from '../assets/pexels-tim-douglas-6210764.jpg';
-import Image8 from '../assets/pexels-vincent-rivaud-2363807.jpg';
-import Image9 from '../assets/pexels-vincent-rivaud-2363807.jpg';
+import Image6 from '../assets/pexels-julie-aagaard-2351289.jpg';
+import Image7 from '../assets/pexels-max-rahubovskiy-6186815.jpg';
+import Image8 from '../assets/pexels-andrea-piacquadio-3769980.jpg';
+import Image9 from '../assets/pexels-naim-benjelloun-2029663.jpg';
 
 
 
@@ -18,9 +18,9 @@ import Image9 from '../assets/pexels-vincent-rivaud-2363807.jpg';
 
 // Placeholder imports (use actual imports in your project)
 import RoomPlaceholder from '../assets/pexels-vincent-rivaud-2363807.jpg';
-import Image10 from '../assets/pexels-tim-douglas-6210764.jpg';
-import Image11 from '../assets/pexels-vincent-rivaud-2363807.jpg';
-import Image12 from '../assets/pexels-vincent-rivaud-2363807.jpg';
+import Image10 from '../assets/pexels-engin-akyurt-2725675 (1).jpg';
+import Image11 from '../assets/pexels-cottonbro-studio-5379219.jpg';
+import Image12 from '../assets/pexels-abdel-rahman-abu-baker-2319428.jpg';
 
 function HomePage() {
   const [showMore, setShowMore] = useState(false);

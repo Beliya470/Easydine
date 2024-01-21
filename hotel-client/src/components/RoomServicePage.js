@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // Define API_URL
-const API_URL = 'http://localhost:5000';
+const API_URL = 'http://localhost:8000';
 
 const roomServicePageStyles = {
   container: {

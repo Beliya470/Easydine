@@ -57,7 +57,7 @@ function SpecialOrderPage() {
   const [confirmation, setConfirmation] = useState(''); // New state for confirmation message
   const navigate = useNavigate();
 
-  const API_URL = 'http://localhost:5000/special-order';
+  const API_URL = 'http://localhost:8000/special-order';
 
   const handleSubmit = async (e) => {
     e.preventDefault();

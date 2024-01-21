@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 // Define the base URL for the API
-const API_URL = 'http://localhost:5000'; // or the URL where your Flask app is hosted
-axios.defaults.baseURL = 'http://localhost:5000';
+const API_URL = 'http://localhost:8000'; // or the URL where your Flask app is hosted
+axios.defaults.baseURL = 'http://localhost:8000';
 // Place a special order
 export const placeSpecialOrder = async (request) => {
     try {

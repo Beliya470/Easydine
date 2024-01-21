@@ -9,7 +9,7 @@ function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-  const API_URL = 'http://localhost:5000';
+  const API_URL = 'http://localhost:8000';
   // In BookingPage.js
 const fetchAdminBookings = () => {
   const token = sessionStorage.getItem('jwt_token'); // Retrieve token from storage

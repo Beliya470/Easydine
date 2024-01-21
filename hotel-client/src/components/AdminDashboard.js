@@ -7,7 +7,7 @@ function OrderManagement() {
   const [newRoom, setNewRoom] = useState({ category: '', size: '', occupancy: '', bed_type: '', style: '', image_url: '', price: '' });
   const [newItem, setNewItem] = useState({ name: '', description: '', price: '', image_url: '' });
 
-  const API_URL = 'http://localhost:5000'; // Backend API URL
+  const API_URL = 'http://localhost:8000'; // Backend API URL
   const token = sessionStorage.getItem('jwt_token'); // JWT token from session storage
   
 

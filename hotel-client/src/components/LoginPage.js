@@ -15,7 +15,7 @@ function AuthPage() {
 
     
 
-    const API_URL = 'http://localhost:5000';
+    const API_URL = 'http://localhost:8000';
 
     const handleSubmit = async (event) => {
         event.preventDefault();

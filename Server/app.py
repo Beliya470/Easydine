@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 # from flask_cors import CORS
 from flask_cors import CORS, cross_origin
+import os
+
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
@@ -9,7 +11,7 @@ from extensions import db, login_manager
 from config import Config
 from forms import LoginForm, RegistrationForm, BookingForm, EditBookingForm, UpdateProfileForm, ContactForm, OrderForm, SpecialOrderForm, FeedbackForm, RoomServiceOrderForm, FoodOrderForm, DeliveryOrderForm, DeliveryOrder, PaymentForm
 
-import stripe
+# import stripe
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
@@ -38,6 +40,9 @@ db.init_app(app)
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 from models import User, HotelBooking, Room, Order, SpecialOrder, Feedback, RoomServiceItem
+
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your_secret_key')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///easydine.db')
 
 # JWT token validation function
 def validate_jwt_token(token):
@@ -86,8 +91,8 @@ def index():
 def protected_route(user_id):
     return jsonify({'message': f'Access granted for user with ID: {user_id}'})
 
-# Setting up the Stripe API Key
-stripe.api_key = 'your_stripe_api_key'
+# # Setting up the Stripe API Key
+# stripe.api_key = 'your_stripe_api_key'
 
 # Configuring the login manager
 login_manager.login_view = 'login'
@@ -489,27 +494,27 @@ def delivery_status(delivery_id):
 
     return render_template('delivery_status.html', delivery=delivery_order)
 
-# Payment Integration Route
-@app.route('/pay', methods=['GET', 'POST'])
-@login_required
-def pay():
-    form = PaymentForm()  # Assuming you have a form for payments
+# # Payment Integration Route
+# @app.route('/pay', methods=['GET', 'POST'])
+# @login_required
+# def pay():
+#     form = PaymentForm()  # Assuming you have a form for payments
 
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            try:
-                # Create a PaymentIntent with the order amount and currency
-                intent = stripe.PaymentIntent.create(
-                    amount=form.amount.data,  # Amount in cents
-                    currency='usd',
-                    payment_method_types=['card'],
-                )
-                return render_template('payment.html', client_secret=intent.client_secret)
-            except stripe.error.StripeError as e:
-                flash(f'Payment error: {str(e)}')
-                return redirect(url_for('pay'))
+#     if request.method == 'POST':
+#         if form.validate_on_submit():
+#             try:
+#                 # Create a PaymentIntent with the order amount and currency
+#                 intent = stripe.PaymentIntent.create(
+#                     amount=form.amount.data,  # Amount in cents
+#                     currency='usd',
+#                     payment_method_types=['card'],
+#                 )
+#                 return render_template('payment.html', client_secret=intent.client_secret)
+#             except stripe.error.StripeError as e:
+#                 flash(f'Payment error: {str(e)}')
+#                 return redirect(url_for('pay'))
 
-    return render_template('checkout.html', form=form)
+#     return render_template('checkout.html', form=form)
 
 # Contact/Inquiry Route
 @app.route('/contact', methods=['GET', 'POST'])
@@ -654,9 +659,15 @@ def create_tables():
     with app.app_context():
         db.create_all()
 
+# if __name__ == '__main__':
+#     create_tables()  # Create tables if they don't exist
+#     # app.run(debug=True)
+#     app.config['DEBUG'] = False
 if __name__ == '__main__':
     create_tables()  # Create tables if they don't exist
-    app.run(debug=True)
+    app.config['DEBUG'] = False
+    app.run()
+
 
 
 

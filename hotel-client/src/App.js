@@ -27,7 +27,7 @@ function App() {
 
   useEffect(() => {
     // Make an authenticated request to fetch user data
-    axios.get('http://localhost:5000/user') // Replace with your actual API endpoint
+    axios.get('http://localhost:8000/user') // Replace with your actual API endpoint
       .then((response) => {
         setUser(response.data);
       })
