@@ -1,138 +1,25 @@
 import React, { useState } from 'react';
-import DatePicker from 'react-datepicker'; 
+
 import './BookingPage.css'; 
-import 'react-datepicker/dist/react-datepicker.css';
 
 
-function BookingPage() {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [bookingRoomId, setBookingRoomId] = useState(null);
-
-  // Remove this line:
-const [bookingSuccess, setBookingSuccess] = useState(false);
-
-
-  
-  const [showBookingForm, setShowBookingForm] = useState(false);
- 
-
-  // const [bookingSuccess, setBookingSuccess] = useState(false);
-
-  // const handleBookingSubmission = (event) => {
-  //   event.preventDefault();
-  //   // Implement your booking logic here.
-  //   // After the booking logic:
-  //   setBookingSuccess(true); // Set the success message to true
-  // };
-
-
-
-  const handleBookRoom = (roomId) => {
-    
-    setBookingRoomId(roomId); // Set the current room id for booking
-    // You might want to toggle visibility of the date-picker here or navigate the user to the booking details page
-  };
-
-  const confirmDates = () => {
-    setShowBookingForm(true);
-  };
-  const handleSuccessAcknowledgement = () => {
-    setBookingSuccess(false); // Hide the success message
-    // Here you can also reset form values or redirect the user as needed
-    // For example, to reset the form you could setStartDate(new Date()), setEndDate(new Date()), etc.
-    // To redirect the user, you could use window.location.href = '/some-path';
-  };
-
-
-    // Modify your SuccessMessage component
-const SuccessMessage = () => (
-  <div className="success-message">
-    <p>Reservation was successful!</p>
-    <button onClick={handleSuccessAcknowledgement} className="acknowledge-button">OK</button>
-  </div>
-);
-
-const handleBookingSubmission = async (event) => {
-  event.preventDefault();
-
-  const userId = sessionStorage.getItem('user_id'); // Retrieve user ID from storage
-  const bookingDetails = {
-    userId: userId,
-    roomId: bookingRoomId,
-    checkIn: startDate.toISOString(),
-    checkOut: endDate.toISOString(),
-  };
-
-  // Log the booking details to the console
-  console.log('Booking Details:', bookingDetails);
-
-  try {
-    const response = await fetch(`${API_URL}/make-booking`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem('jwt_token')}`,
-      },
-      body: JSON.stringify(bookingDetails)
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      setBookingSuccess(true);
-    } else {
-      console.error('Booking error:', data);
-    }
-  } catch (error) {
-    console.error('Error submitting booking:', error);
-  }
-};
-
-
-
-
-
-
-  const handleDateChange = (dates) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-    // Here you would handle the date change, perhaps updating state or making a booking API call
-  };
-
-
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    checkIn: '',
-    checkOut: '',
-    roomType: '',
-    guests: 1,
-  });
-
-  const [availableRooms, setAvailableRooms] = useState([]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    document.getElementById('available-rooms-section').scrollIntoView({ behavior: 'smooth' });
-  };
+function AdminDashboard() {
+    const [bookings, setBookings] = useState([]);
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
   const API_URL = 'http://localhost:5000';
   // In BookingPage.js
-const handleFetchRooms = () => {
+const fetchAdminBookings = () => {
   const token = sessionStorage.getItem('jwt_token'); // Retrieve token from storage
-  fetch(`${API_URL}/booking`, {
+  fetch(`${API_URL}/admin/bookings`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
   })
     .then(response => response.json())
-    .then(data => setAvailableRooms(data))
+    .then(data => setBookings(data))
     .catch(error => console.error('Error fetching available rooms:', error));
 };
 

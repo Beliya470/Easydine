@@ -6,7 +6,7 @@ function Navbar() {
         display: 'flex',
         flexDirection: 'row', /* Align items horizontally */
         backgroundColor: '#333', /* Background color for the navbar */
-        padding: '20px 0', /* Vertical padding to navbar */
+        padding: '200px 100', /* Vertical padding to navbar */
     };
 
     const linkStyle = {
@@ -17,8 +17,8 @@ function Navbar() {
         borderRadius: '5px',
         transition: 'transform 0.2s ease-in-out, background-color 0.2s',
         display: 'inline-flex', /* Use inline-flex for aligning text inside anchors */
-        alignItems: 'center', /* Center the text vertically */
-        justifyContent: 'center', /* Center the text horizontally */
+        alignItems: 'right', /* Center the text vertically */
+        justifyContent: 'right', /* Center the text horizontally */
     };
 
     const linkHoverStyle = {
@@ -38,13 +38,13 @@ function Navbar() {
             <Link to="/register">Register</Link>
             <Link to="/profile">Profile</Link> */}
             <Link to="/booking" style={linkStyle}>Book a Room</Link>
-            <Link to="/profile/<int:user_id>" style={linkStyle}>Profile</Link>
+            {/* <Link to="/profile/user_id" style={linkStyle}>Profile</Link> */}
             {/* <Link to="/orders">View Orders</Link>
             <Link to="/feedback">Feedback</Link>
             <Link to="/admin">Admin Dashboard</Link> */}
             <Link to="/special-order" style={linkStyle}>Special Orders</Link>
             <Link to="/room-service/items" style={linkStyle}>Room Service</Link>
-            <Link to="/admin" style={linkStyle}>Admin Dashboard</Link>
+            {/* <Link to="/admin" style={linkStyle}>Admin Dashboard</Link> */}
             {/* <Link to="/food-order" style={linkStyle}>Food Order</Link> */}
             {/* <Link to="/delivery">Delivery</Link>
             <Link to="/payment">Make Payment</Link> */}

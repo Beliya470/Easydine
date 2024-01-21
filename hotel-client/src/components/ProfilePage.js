@@ -11,12 +11,14 @@ function ProfilePage() {
     const navigate = useNavigate();
 
     const userID = sessionStorage.getItem('user_id');
+    
 
     useEffect(() => {
         if (!userID) {
             navigate('/login');
         } else {
             setLoading(true);
+            
             axios.get(`${API_URL}/profile/${userID}`)
                 .then(response => {
                     setUserDetails(response.data);

@@ -195,3 +195,32 @@ export const updateProfile = async (profileData) => {
 // Add any other missing API functions here as needed
 
 // ...
+// Fetch all admin bookings
+export const fetchAdminBookings = async () => {
+    try {
+        const response = await axios.get('/admin/bookings', {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem('jwt_token')}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching admin bookings:', error);
+        throw error;
+    }
+};
+
+// Fetch all admin orders
+export const fetchAdminOrders = async () => {
+    try {
+        const response = await axios.get('/admin/orders', {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem('jwt_token')}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching admin orders:', error);
+        throw error;
+    }
+};

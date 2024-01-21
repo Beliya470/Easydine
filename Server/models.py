@@ -63,6 +63,9 @@ class User(UserMixin, db.Model):
     bookings = db.relationship('HotelBooking', backref='user', lazy=True)
     orders = db.relationship('Order', backref='user', lazy=True)
     feedbacks = db.relationship('Feedback', backref='user', lazy=True)
+    # special_orders = db.relationship('SpecialOrder', backref='user', lazy=True)
+    # hotel_bookings = db.relationship('HotelBooking', backref='user', lazy=True)
+    # orders = db.relationship('Order', backref='user', lazy=True)
 
 # Order Model for Room Service and Food
 class Order(db.Model):

@@ -57,7 +57,7 @@
 .hotel-info-content {
   max-width: 50%; /* Maximum width can be 50% to match the images */
   font-size: 16px; /* Adjust font size for better readability */
-  font-family: Arial, sans-serif; /* Change to a more commonly used font */
+  font-family: Merriweather, montserrat; /* Change to a more commonly used font */
   line-height: 1.5; /* Increase line height for better readability */
   text-align: left; /* Align text to the left */
   display: flex;
@@ -197,6 +197,8 @@
   grid-template-columns: repeat(4, 1fr); /* 4 columns in a row */
   gap: 20px; /* Space between the cards */
   padding: 20px; /* Padding inside the container */
+  font-family: 'Pacifico', cursive; /* Use the Roboto font */
+  font-size: 11px; /* Set the font size */
 }
 
 .room-card {
@@ -204,6 +206,9 @@
   flex-direction: column;
   align-items: center; /* Center items horizontally */
   text-align: center; /* Center text */
+  font-family: 'Pacifico', cursive; /* Use the Roboto font */
+  font-size: 11px; /* Set the font size */
+  
 }
 
 .room-card img {

@@ -51,10 +51,10 @@ function App() {
           
           <Route path="/orders" element={<OrderPage />} />
           <Route path="/payment" element={<PaymentPage />} />
-          <Route path="/profile/:userID" element={<ProfilePage />} />
+          <Route path="/profile/user_id" element={<ProfilePage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/room-service/items" element={<RoomServicePage />} />
-          <Route path="/room-service/order" element={<RoomServicePage />} />
+          <Route path="/room-service/items" element={<RoomServicePage />} />
           <Route path="/special-order" element={<SpecialOrderPage />} />
           
           <Route path="/admin" element={<AdminDashboard />} />

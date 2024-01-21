@@ -25,11 +25,16 @@ import Image12 from '../assets/pexels-vincent-rivaud-2363807.jpg';
 function HomePage() {
   const [showMore, setShowMore] = useState(false);
   const [expandedRoom, setExpandedRoom] = useState(null); // Define expandedRoom state here
+  const [showSubscriptionForm, setShowSubscriptionForm] = useState(false);
 
   // Toggle function for "Show More" / "Show Less"
   const handleShowMore = (roomName) => {
     setExpandedRoom(expandedRoom === roomName ? null : roomName); // Correctly toggle expandedRoom state
   }; 
+
+
+  
+  
 
 
   // Define the details for each room
@@ -84,10 +89,18 @@ function HomePage() {
     }
   ];
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission here
-  };
+  function handleSubscriptionClick() {
+    setShowSubscriptionForm(true);
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    // Perform submission logic
+    setShowSubscriptionForm(false);
+    window.location.href = '/booking'; // Redirect to the booking page
+  }
+
+  
 
   return (
     <div className="home-page">
@@ -107,11 +120,15 @@ function HomePage() {
                 <h3>{room.name}</h3>
                 <p>{expandedRoom === room.name ? room.description : `${room.description.substring(0, 100)}...`}</p>
                 <ul className="room-details">
-                  <li><img src="/path/to/size-icon.svg" alt="Size"/> {room.size}</li>
-                  <li><img src="/path/to/wifi-icon.svg" alt="WiFi"/> {room.wifi}</li>
+                  <li>Size: {room.size}</li>
+                  <li>WiFi: {room.wifi}</li>
+                  <li>Occupancy: {room.occupancy}</li>
+                  <li>Bed Type: {room.bedType}</li>
+                  <li>Style: {room.style}</li>
+                  {/* <li><img src="/path/to/wifi-icon.svg" alt="WiFi"/> {room.wifi}</li>
                   <li><img src="/path/to/occupancy-icon.svg" alt="Occupancy"/> {room.occupancy}</li>
                   <li><img src="/path/to/bed-icon.svg" alt="Bed Type"/> {room.bedType}</li>
-                  <li><img src="/path/to/style-icon.svg" alt="Style"/> {room.style}</li>
+                  <li><img src="/path/to/style-icon.svg" alt="Style"/> {room.style}</li> */}
                 </ul>
                 <button onClick={() => handleShowMore(room.name)}>
                   {expandedRoom === room.name ? 'Show Less' : 'Show More'}
@@ -144,19 +161,14 @@ function HomePage() {
         <div className="hotel-info-content">
           <h1>EasyDine, A Culinary Retreat</h1>
           <p className="hotel-description">
-            {showMore ? (
-              `EasyDine offers an unforgettable experience with its gourmet dining, luxurious rooms,
+            
+              EasyDine offers an unforgettable experience with its gourmet dining, luxurious rooms,
                and first-class service. Nestled in the heart of the city, our hotel boasts a timeless elegance
                and a legacy of impeccable hospitality. Since opening our doors, we've been an escape for those 
-               seeking a stay of comfort and sophistication.`
-            ) : (
-              `EasyDine offers an unforgettable experience with its gourmet dining and luxurious rooms. Nestled in the heart...`
-            )}
-            <button onClick={() => handleShowMore()} className="show-more-btn">
-
+               seeking a stay of comfort and sophistication.
+           
+              
             
-              {showMore ? 'Show Less' : 'Show More'}
-            </button>
           </p>
           <div className="hotel-highlights">
           <div className="hotel-highlights">
@@ -209,33 +221,49 @@ function HomePage() {
           <span className="icon">🚚</span>
           <h3>Reliable Deliveries</h3>
           <p>Enjoy the convenience of our prompt in-room delivery service.</p>
-          <Link to="/delivery" className="btn-primary">Order Delivery</Link>
+          <Link to="/room-service/items" className="btn-primary">Order Delivery</Link>
         </div>
       </section>
       {/* Subscription Section */}
       <section className="subscription-section">
         <h2>Subscribe for Exclusive Offers</h2>
         <p>Don't miss out on our latest deals and promotions. Subscribe now!</p>
-        <form onSubmit={handleSubmit} className="subscription-form">
-          {/* Input field for email */}
-          {/* Add appropriate input element and label here */}
-          <button type="submit">Subscribe</button>
-        </form>
+
+        {!showSubscriptionForm && (
+          <button onClick={handleSubscriptionClick}>Subscribe</button>
+        )}
+
+        {showSubscriptionForm && (
+          <div id="subscriptionModal" className="modal">
+            <form onSubmit={handleSubmit} className="subscription-form">
+              <label htmlFor="email">Email:</label>
+              <input type="email" id="email" name="email" required />
+              
+              <label>
+                <input type="checkbox" name="newsletter" required />
+                I agree to receive newsletters and promotional materials.
+              </label>
+
+              <button type="submit">Submit</button>
+              <button type="button" onClick={() => setShowSubscriptionForm(false)}>Close</button>
+            </form>
+          </div>
+        )}
       </section>
 
       <footer className="hotel-footer">
         <nav className="footer-navigation">
           <Link to="/login" className="footer-link">Login/Register</Link>
-          <Link to="/profile" className="footer-link">Profile</Link>
-          <Link to="/orders" className="footer-link">View Orders</Link>
-          <Link to="/feedback" className="footer-link">Feedback</Link>
+          {/* <Link to="/profile" className="footer-link">Profile</Link> */}
+          {/* <Link to="/orders" className="footer-link">View Orders</Link> */}
+          {/* <Link to="/feedback" className="footer-link">Feedback</Link> */}
         </nav>
         <p>Join us on a culinary and comfort adventure at EasyDine.</p>
         <div className="social-icons">
-          <a href="#" className="social-icon"><span className="icon">📷</span></a>
+          {/* <a href="#" className="social-icon"><span className="icon">📷</span></a>
           <a href="#" className="social-icon"><span className="icon">📘</span></a>
           <a href="#" className="social-icon"><span className="icon">🐦</span></a>
-          <a href="#" className="social-icon"><span className="icon">📽️</span></a>
+          <a href="#" className="social-icon"><span className="icon">📽️</span></a> */}
         </div>
       </footer>
     </div>

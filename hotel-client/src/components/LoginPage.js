@@ -50,12 +50,12 @@ function AuthPage() {
                     // User is logging in
                     // const userID = response.data.user_id; // Adjust according to your actual response structure
                     // sessionStorage.setItem('user', JSON.stringify(response.data));
-                    // sessionStorage.setItem('user_id', response.data.user_id);
+                    sessionStorage.setItem('user_id', response.data.user_id);
                     sessionStorage.setItem('jwt_token', response.data.token);
                     
-                    navigate(`/profile/${response.data.user_id}`);
+                    navigate(`/booking`);
                     // sessionStorage.setItem('user_logged_in', true);
-                    const redirectPath = response.data.is_admin ? '/admin' : `/profile/${response.data.user_id}`;
+                    const redirectPath = response.data.is_admin ? '/admin' : `/booking`;
 
                     // const redirectPath = response.data.is_admin ? '/admin' : `/profile/${userID}`;
                     navigate(redirectPath);

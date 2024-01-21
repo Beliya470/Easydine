@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-from flask_cors import CORS
+# from flask_cors import CORS
+from flask_cors import CORS, cross_origin
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -15,7 +17,8 @@ from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 # from jwt import encode as jwt_encode
 from jwt import encode as jwt_encode, decode as jwt_decode, ExpiredSignatureError
 
-from datetime import datetime
+from datetime import datetime, timedelta
+
 
 
 from functools import wraps
@@ -61,7 +64,8 @@ def token_required(f):
 def create_jwt_token(user_id):
     payload = {
         'user_id': user_id,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+        # 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+        'exp': datetime.utcnow() + timedelta(hours=24)
     }
     token = jwt_encode(payload, 'your_secret_key', algorithm='HS256')
     return token  # Remove .decode('UTF-8')
@@ -335,6 +339,30 @@ def order_status(order_id):
 
     return render_template('order_status.html', order=order, status=status)
 
+
+
+
+# @app.route('/profile/<int:user_id>', methods=['GET'])
+# @login_required
+# def profile(user_id):
+#     user = User.query.get_or_404(user_id)
+    
+#     # Ensure the current user is the one requested or an admin
+#     if current_user.id != user_id and not current_user.is_admin:
+#         return jsonify({'message': 'Access denied'}), 403
+
+#     # Fetch user details and related data
+#     user_data = {
+#         'username': user.username,
+#         # 'email': user.email,
+#         'specialOrders': [order.serialize() for order in user.special_orders],
+#         'bookings': [booking.serialize() for booking in user.hotel_bookings],
+#         'roomServiceOrders': [order.serialize() for order in user.orders]
+#     }
+
+#     return jsonify(user_data), 200
+
+
 # Profile Route
 @app.route('/profile/<int:user_id>', methods=['GET', 'PUT'])
 @login_required
@@ -448,12 +476,29 @@ def contact():
 
 # Admin Dashboard Route
 @app.route('/admin')
-@login_required
+# @login_required
 def admin_dashboard():
     if not current_user.is_admin:  # Admin check logic
         return redirect(url_for('index'))
     # Admin dashboard logic
     return render_template('admin_dashboard.html')
+
+
+
+
+@app.route('/admin/bookings', methods=['GET'])
+def admin_bookings():
+    bookings = HotelBooking.query.all()
+    return jsonify({'bookings': [booking.to_dict() for booking in bookings]})
+
+@app.route('/admin/orders', methods=['GET'])
+def admin_orders():
+    orders = Order.query.all()
+    orders_list = [{'id': order.id, 'details': order.details, 'status': order.status, 'order_type': order.order_type} for order in orders]
+    return jsonify({'orders': orders_list})
+
+
+
 
 @app.route('/booking', methods=['GET'])
 @token_required

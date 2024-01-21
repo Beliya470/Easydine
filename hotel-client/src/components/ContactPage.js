@@ -1,41 +1,49 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 
 function ContactPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      await axios.post('/contact', { name, email, message });
-      // Reset state and close modal on successful submission
-      setName('');
-      setEmail('');
-      setMessage('');
-      setModalVisible(false);
-    } catch (error) {
-      // Handle errors here, if necessary
-    }
+    // Simulate a successful submission
+    setName('');
+    setEmail('');
+    setMessage('');
+    setModalVisible(false);
+    setSubmitSuccess(true);
+    setTimeout(() => {
+      setSubmitSuccess(false);
+      window.location.href = '/'; // Redirect to homepage
+    }, 3000);
   };
+
+  useEffect(() => {
+    if (submitSuccess) {
+      const timer = setTimeout(() => {
+        setSubmitSuccess(false);
+        window.location.href = '/'; // Redirect to homepage
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [submitSuccess]);
 
   return (
     <div style={containerStyle}>
       <h1>Contact Us</h1>
 
-      {/* Encouraging Messages */}
       <div style={encouragingMessageContainerStyle}>
+        {/* Encouraging Messages */}
         <div style={encouragingColumnStyle}>
           <img
             src="https://media.istockphoto.com/id/1458164457/photo/businessman-using-laptop-and-smartphone-with-contact-icons-on-virtual-screen-searching-web.jpg?b=1&s=612x612&w=0&k=20&c=XBXzfezfpuRWKT0SZtnrktYv63fyZUMgBgPDvHArcbw="
             alt="Encouragement 1"
             style={encouragingImageStyle}
           />
-          <p>
-            Your feedback matters to us! Reach out and let's chat. We value your thoughts and opinions.
-          </p>
+          <p>Your feedback matters to us! Reach out and let's chat. We value your thoughts and opinions.</p>
         </div>
         <div style={encouragingColumnStyle}>
           <img
@@ -43,31 +51,30 @@ function ContactPage() {
             alt="Encouragement 2"
             style={encouragingImageStyle}
           />
-          <p>
-            We are here to assist you. Drop us a message anytime. Your satisfaction is our top priority.
-          </p>
+          <p>We are here to assist you. Drop us a message anytime. Your satisfaction is our top priority.</p>
         </div>
       </div>
 
-      {/* Images */}
+      {/* Images
       <div style={imagesContainerStyle}>
         <img
-        //   src="https://via.placeholder.com/300"
+          src="image-path-1.jpg" // Replace with actual image path
           alt="Image 1"
           style={imageStyle}
         />
         <img
-        //   src="https://via.placeholder.com/300"
+          src="image-path-2.jpg" // Replace with actual image path
           alt="Image 2"
           style={imageStyle}
         />
-      </div>
+      </div> */}
 
       {/* Contact Us Button */}
       <button onClick={() => setModalVisible(true)} style={contactButtonStyle}>
         Contact Us
       </button>
 
+      {/* Modal */}
       {modalVisible && (
         <div style={modalOverlayStyle}>
           <div style={modalContentStyle}>
@@ -105,11 +112,14 @@ function ContactPage() {
         </div>
       )}
 
+      {/* Success Message */}
+      {submitSuccess && <div>Message submitted successfully!</div>}
+
       {/* Social Media Icons (Footer) */}
       <div style={footerStyle}>
-        <a href="#" target="_blank" rel="noopener noreferrer">
+        {/* <a href="#" target="_blank" rel="noopener noreferrer">
           <img
-            src="facebook-icon.png"
+            // src="facebook-icon.png"
             alt="Facebook"
             style={socialMediaIconStyle}
           />
@@ -127,11 +137,165 @@ function ContactPage() {
             alt="Instagram"
             style={socialMediaIconStyle}
           />
-        </a>
+        </a> */}
       </div>
     </div>
   );
 }
+
+
+
+
+
+// import React, { useState, useEffect } from 'react';
+// import axios from 'axios';
+
+// function ContactPage() {
+//   const [name, setName] = useState('');
+//   const [email, setEmail] = useState('');
+//   const [message, setMessage] = useState('');
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       await axios.post('/contact', { name, email, message });
+//       setName('');
+//       setEmail('');
+//       setMessage('');
+//       setModalVisible(false);
+//       setSubmitSuccess(true);
+//       setTimeout(() => {
+//         setSubmitSuccess(false);
+//         window.location.href = '/'; // Redirect to homepage
+//       }, 3000);
+//     } catch (error) {
+//       // Handle errors here, if necessary
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (submitSuccess) {
+//       const timer = setTimeout(() => {
+//         setSubmitSuccess(false);
+//       }, 3000);
+//       return () => clearTimeout(timer);
+//     }
+//   }, [submitSuccess]);
+
+//   return (
+//     <div style={containerStyle}>
+//       <h1>Contact Us</h1>
+
+//       <div style={encouragingMessageContainerStyle}>
+//         {/* Encouraging Messages */}
+//         <div style={encouragingColumnStyle}>
+//           <img
+//             src="https://media.istockphoto.com/id/1458164457/photo/businessman-using-laptop-and-smartphone-with-contact-icons-on-virtual-screen-searching-web.jpg?b=1&s=612x612&w=0&k=20&c=XBXzfezfpuRWKT0SZtnrktYv63fyZUMgBgPDvHArcbw="
+//             alt="Encouragement 1"
+//             style={encouragingImageStyle}
+//           />
+//           <p>Your feedback matters to us! Reach out and let's chat. We value your thoughts and opinions.</p>
+//         </div>
+//         <div style={encouragingColumnStyle}>
+//           <img
+//             src="https://media.istockphoto.com/id/1308052781/photo/hand-of-businessman-holding-mobile-smartphone-with-icon-customer-support-concept-copy-space.jpg?b=1&s=612x612&w=0&k=20&c=h-nnTyFpDimUotGsa-kd4z37JbSqdd4usnMIry-bpio="
+//             alt="Encouragement 2"
+//             style={encouragingImageStyle}
+//           />
+//           <p>We are here to assist you. Drop us a message anytime. Your satisfaction is our top priority.</p>
+//         </div>
+//       </div>
+
+//       {/* Images */}
+//       <div style={imagesContainerStyle}>
+//         <img
+//           src="image-path-1.jpg" // Replace with actual image path
+//           alt="Image 1"
+//           style={imageStyle}
+//         />
+//         <img
+//           src="image-path-2.jpg" // Replace with actual image path
+//           alt="Image 2"
+//           style={imageStyle}
+//         />
+//       </div>
+
+//       {/* Contact Us Button */}
+//       <button onClick={() => setModalVisible(true)} style={contactButtonStyle}>
+//         Contact Us
+//       </button>
+
+//       {/* Modal */}
+//       {modalVisible && (
+//         <div style={modalOverlayStyle}>
+//           <div style={modalContentStyle}>
+//             <span style={closeButtonStyle} onClick={() => setModalVisible(false)}>
+//               &times;
+//             </span>
+//             <h2>Contact Form</h2>
+//             <form onSubmit={handleSubmit} style={contactFormStyle}>
+//               <input
+//                 type="text"
+//                 value={name}
+//                 onChange={(e) => setName(e.target.value)}
+//                 placeholder="Your Name"
+//                 style={inputStyle}
+//               />
+//               <input
+//                 type="email"
+//                 value={email}
+//                 onChange={(e) => setEmail(e.target.value)}
+//                 placeholder="Your Email"
+//                 style={inputStyle}
+//               />
+//               <textarea
+//                 value={message}
+//                 onChange={(e) => setMessage(e.target.value)}
+//                 placeholder="Your Message"
+//                 rows="4"
+//                 style={textareaStyle}
+//               />
+//               <button type="submit" style={submitButtonStyle}>
+//                 Send Message
+//               </button>
+//             </form>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* Success Message */}
+//       {submitSuccess && <div>Message submitted successfully!</div>}
+
+//       {/* Social Media Icons (Footer) */}
+//       <div style={footerStyle}>
+//         <a href="#" target="_blank" rel="noopener noreferrer">
+//           <img
+//             src="facebook-icon.png"
+//             alt="Facebook"
+//             style={socialMediaIconStyle}
+//           />
+//         </a>
+//         <a href="#" target="_blank" rel="noopener noreferrer">
+//           <img
+//             src="twitter-icon.png"
+//             alt="Twitter"
+//             style={socialMediaIconStyle}
+//           />
+//         </a>
+//         <a href="#" target="_blank" rel="noopener noreferrer">
+//           <img
+//             src="instagram-icon.png"
+//             alt="Instagram"
+//             style={socialMediaIconStyle}
+//           />
+//         </a>
+//       </div>
+//     </div>
+//   );
+// }
+
 
 // CSS Styles
 const containerStyle = {
@@ -218,11 +382,16 @@ const encouragingMessageContainerStyle = {
   display: 'flex',
   justifyContent: 'space-between',
   marginTop: '20px',
+  textAlign: 'centre',
+  padding: '10px 300px',
+  fontFamily: 'cursive', // Use a cursive font style
+  fontSize: '18px', // Adjust the font size as needed
 };
 
 const encouragingColumnStyle = {
-  flex: 1,
-  textAlign: 'center',
+  flex: 0,
+  textAlign: 'left',
+  padding: '10px 20px',
 };
 
 const encouragingImageStyle = {
