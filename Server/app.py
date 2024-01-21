@@ -22,6 +22,9 @@ from datetime import datetime, timedelta
 
 
 from functools import wraps
+import logging
+logging.basicConfig(level=logging.INFO)
+
 
 # from app import db, create_app  # Import the create_app function and other necessary modules
 
@@ -222,6 +225,50 @@ def book():
 def get_room_service_items():
     items = RoomServiceItem.query.all()
     return jsonify([item.to_dict() for item in items])
+
+
+from flask import request, jsonify
+import logging
+
+@app.route('/room-service/items', methods=['POST'])
+def add_room_service_item():
+    try:
+        data = request.json
+        logging.info(f"Received data: {data}")  # Log the received data
+
+        new_item = RoomServiceItem(name=data['name'], 
+                                   description=data['description'], 
+                                   price=data['price'], 
+                                   image_url=data['image_url'])
+        db.session.add(new_item)
+        db.session.commit()
+
+        logging.info(f"Added new item: {new_item}")  # Log the new item details
+        return jsonify(new_item.to_dict()), 201
+
+    except Exception as e:
+        logging.error(f"Error adding item: {e}")  # Log the error details
+        return jsonify({'error': 'Error adding item'}), 500
+
+
+
+@app.route('/room-service/items/<int:item_id>', methods=['DELETE'])
+def delete_room_service_item(item_id):
+    try:
+        logging.info(f"Attempting to delete item with ID: {item_id}")  # Log the item ID
+        item = RoomServiceItem.query.get(item_id)
+        if item:
+            db.session.delete(item)
+            db.session.commit()
+            logging.info("Item deleted successfully")  # Log successful deletion
+            return jsonify({'message': 'Item deleted successfully'}), 200
+        else:
+            logging.warning("Item not found")  # Log item not found
+            return jsonify({'error': 'Item not found'}), 404
+
+    except Exception as e:
+        return jsonify({'error': 'Error deleting item'}), 500
+
 
 # Route to view a booking
 @app.route('/booking/<int:booking_id>')
@@ -484,6 +531,59 @@ def admin_dashboard():
     return render_template('admin_dashboard.html')
 
 
+@app.route('/booking', methods=['POST'])
+@token_required
+def add_booking(user_id):
+    # Parse JSON data from request
+    data = request.get_json()
+    
+    # Extract data for new room
+    category = data.get('category')
+    size = data.get('size')
+    occupancy = data.get('occupancy')
+    bed_type = data.get('bed_type')
+    style = data.get('style')
+    image_url = data.get('image_url')
+    price = data.get('price')
+
+    # Validate data (you can add more validation as needed)
+    if not all([category, size, occupancy, bed_type, style, price]):
+        return jsonify({'error': 'Missing required room information'}), 400
+
+    # Create new room instance
+    new_room = Room(
+        category=category,
+        size=size,
+        occupancy=occupancy,
+        bed_type=bed_type,
+        style=style,
+        image_url=image_url,
+        price=price
+    )
+
+    # Add to database and commit
+    try:
+        db.session.add(new_room)
+        db.session.commit()
+        return jsonify({'message': 'Room successfully added', 'room_id': new_room.id}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'An error occurred: ' + str(e)}), 500
+
+
+    # Find the room by ID
+    room = Room.query.get(room_id)
+    if not room:
+        return jsonify({'error': 'Room not found'}), 404
+
+    # Delete the room from database
+    try:
+        db.session.delete(room)
+        db.session.commit()
+        return jsonify({'message': 'Room successfully deleted'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'An error occurred: ' + str(e)}), 500
 
 
 @app.route('/admin/bookings', methods=['GET'])
@@ -497,6 +597,27 @@ def admin_orders():
     orders_list = [{'id': order.id, 'details': order.details, 'status': order.status, 'order_type': order.order_type} for order in orders]
     return jsonify({'orders': orders_list})
 
+
+@app.route('/booking/<int:room_id>', methods=['DELETE'])
+def delete_room(room_id):
+    logging.info(f"Received delete request for room ID: {room_id}")
+
+    # Find the room by ID
+    room = Room.query.get(room_id)
+    if not room:
+        logging.info("Room not found")
+        return jsonify({'error': 'Room not found'}), 404
+
+    # Delete the room from the database
+    try:
+        db.session.delete(room)
+        db.session.commit()
+        logging.info("Room deleted successfully")
+        return jsonify({'message': 'Room successfully deleted'}), 200
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"An error occurred: {e}")
+        return jsonify({'error': 'An error occurred: ' + str(e)}), 500
 
 
 
