@@ -16,9 +16,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 
-# from jwt import encode as jwt_encode
-# from jwt import encode as jwt_encode, decode as jwt_decode, ExpiredSignatureError
-import jwt
+from jwt import encode as jwt_encode
+from jwt import encode as jwt_encode, decode as jwt_decode
+
 
 
 
@@ -50,7 +50,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:/
 # JWT token validation function
 def validate_jwt_token(token):
     try:
-        payload = jwt.decode(token, 'your_secret_key', algorithms=['HS256'])
+        payload = jwt_decode(token, 'your_secret_key', algorithms=['HS256'])
         return payload['user_id']
     except Exception as e:
         return None
@@ -78,7 +78,7 @@ def create_jwt_token(user_id):
         # 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
         'exp': datetime.utcnow() + timedelta(hours=24)
     }
-    token = jwt.encode(payload, 'your_secret_key', algorithm='HS256')
+    token = jwt_encode(payload, 'your_secret_key', algorithm='HS256')
     return token  # Remove .decode('UTF-8')
 
 
