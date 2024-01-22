@@ -21,10 +21,10 @@ function Navbar() {
         justifyContent: 'right', /* Center the text horizontally */
     };
 
-    const linkHoverStyle = {
-        backgroundColor: '#ff6b6b', /* Background color on hover */
-        transform: 'translateY(-3px)', /* 'Dance' move upwards */
-    };
+    // const linkHoverStyle = {
+    //     backgroundColor: '#ff6b6b', /* Background color on hover */
+    //     transform: 'translateY(-3px)', /* 'Dance' move upwards */
+    // };
 
     const linkActiveStyle = {
         transform: 'scale(0.95)', /* Slightly shrink the button when clicked */
