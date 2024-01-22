@@ -1,4 +1,4 @@
-#!/home/beliya_user/Easydine/Server/venv/bin/python
+#!/home/beliya_user/easy1/Server/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
