@@ -142,9 +142,7 @@ pyparsing==2.4.7
 pypng==0.20220715.0
 pyrsistent==0.18.1
 PySocks==1.7.1
-pysqlite3==0.5.1
-pytest==7.4.0
-python-apt==2.4.0+ubuntu2
+
 python-dateutil==2.8.2
 python-dotenv==1.0.0
 python-jose==3.3.0
