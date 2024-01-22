@@ -25,7 +25,7 @@ cors==1.0.1
 cryptography==41.0.7
 cycler==0.12.1
 cymem==2.0.8
-dbus-python==1.2.18
+
 decorator==5.1.1
 defusedxml==0.7.1
 distlib==0.3.7
@@ -131,13 +131,13 @@ pure-eval==0.2.2
 pyasn1==0.5.0
 pycairo==1.25.0
 pycparser==2.21
-pycrypto==2.6.1
+
 pycryptodomex==3.19.0
 pydantic==2.5.2
 pydantic_core==2.14.5
 pydot==1.4.2
 Pygments==2.16.1
-PyGObject==3.42.1
+
 PyJWT==2.3.0
 pymssql==2.2.9
 pyOpenSSL==23.2.0
