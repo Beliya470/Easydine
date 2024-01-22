@@ -18,7 +18,8 @@ from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 
 # from jwt import encode as jwt_encode
 # from jwt import encode as jwt_encode, decode as jwt_decode, ExpiredSignatureError
-import jwt
+# import jwt
+from jose import jwt
 
 
 
@@ -71,16 +72,25 @@ def token_required(f):
     return decorated
 
 
+# # Function to create JWT token
+# def create_jwt_token(user_id):
+#     payload = {
+#         'user_id': user_id,
+#         # 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+#         'exp': datetime.utcnow() + timedelta(hours=24)
+#     }
+#     # token = jwt.encode(payload, 'your_secret_key', algorithm='HS256')
+#     token = jwt.encode(payload, 'your_secret_key', algorithm='HS256').decode('utf-8')
+#     return token  # Remove .decode('UTF-8')
+
 # Function to create JWT token
 def create_jwt_token(user_id):
     payload = {
         'user_id': user_id,
-        # 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
         'exp': datetime.utcnow() + timedelta(hours=24)
     }
     token = jwt.encode(payload, 'your_secret_key', algorithm='HS256')
-    return token  # Remove .decode('UTF-8')
-
+    return token
 
 
 
