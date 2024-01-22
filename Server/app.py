@@ -19,7 +19,7 @@ from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 # from jwt import encode as jwt_encode
 # from jwt import encode as jwt_encode, decode as jwt_decode, ExpiredSignatureError
 import jwt
-from jwt.exceptions import PyJWTError
+
 
 
 from datetime import datetime, timedelta
@@ -50,19 +50,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:/
 # JWT token validation function
 def validate_jwt_token(token):
     try:
-        # Decoding the token
         payload = jwt.decode(token, 'your_secret_key', algorithms=['HS256'])
         return payload['user_id']
-    except jwt.ExpiredSignatureError:
-        # Handle expired token if needed
+    except Exception as e:
         return None
-    except jwt.PyJWTError as e:  # Catching other jwt exceptions
-        # Handle other JWT related errors
-        print(f"JWT error: {str(e)}")
-        return None
-
-
-
 
 
 # Decorator for routes that require a token
@@ -81,15 +72,14 @@ def token_required(f):
 
 
 # Function to create JWT token
-# Function to create JWT token
 def create_jwt_token(user_id):
     payload = {
         'user_id': user_id,
+        # 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
         'exp': datetime.utcnow() + timedelta(hours=24)
     }
-    # Encoding the token with the hardcoded secret key
     token = jwt.encode(payload, 'your_secret_key', algorithm='HS256')
-    return token
+    return token  # Remove .decode('UTF-8')
 
 
 
