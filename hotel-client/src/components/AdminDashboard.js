@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
+
 import axios from 'axios';
 import './Admindashboard.css'; 
 function OrderManagement() {
@@ -8,8 +10,21 @@ function OrderManagement() {
   const [newItem, setNewItem] = useState({ name: '', description: '', price: '', image_url: '' });
 
   const API_URL = 'http://localhost:8000'; // Backend API URL
+  const navigate = useNavigate();
   const token = sessionStorage.getItem('jwt_token'); // JWT token from session storage
-  
+  // const userRole = sessionStorage.getItem('user_role'); 
+  const isAdmin = sessionStorage.getItem('is_admin') === 'true';
+
+
+  useEffect(() => {
+    if (!token || !isAdmin) {
+      navigate('/login');
+    } else {
+      fetchRooms();
+      fetchRoomServiceItems();
+    }
+  }, []);
+
 
   useEffect(() => {
     fetchRooms();

@@ -1,7 +1,17 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker'; 
 import './BookingPage.css'; 
 import 'react-datepicker/dist/react-datepicker.css';
+import whatsappIcon from './whatsapp.png'; // Adjust the path if necessary
+
+
+
+
+
+
+
 
 
 function BookingPage() {
@@ -10,10 +20,12 @@ function BookingPage() {
   const [bookingRoomId, setBookingRoomId] = useState(null);
 
   // Remove this line:
-const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
+
+  const navigate = useNavigate();
 
 
-  
+  const API_URL = 'http://localhost:8000'; // Backend API URL
   const [showBookingForm, setShowBookingForm] = useState(false);
  
 
@@ -25,6 +37,12 @@ const [bookingSuccess, setBookingSuccess] = useState(false);
   //   // After the booking logic:
   //   setBookingSuccess(true); // Set the success message to true
   // };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Call the function to fetch rooms or handle the submission logic here
+    handleFetchRooms(); // This will fetch rooms when the form is submitted
+  };
+  
 
 
 
@@ -39,6 +57,8 @@ const [bookingSuccess, setBookingSuccess] = useState(false);
   };
   const handleSuccessAcknowledgement = () => {
     setBookingSuccess(false); // Hide the success message
+    setShowBookingForm(false);
+    setBookingRoomId(null);
     // Here you can also reset form values or redirect the user as needed
     // For example, to reset the form you could setStartDate(new Date()), setEndDate(new Date()), etc.
     // To redirect the user, you could use window.location.href = '/some-path';
@@ -57,6 +77,14 @@ const handleBookingSubmission = async (event) => {
   event.preventDefault();
 
   const userId = sessionStorage.getItem('user_id'); // Retrieve user ID from storage
+
+  // Check if the user is logged in
+  if (!userId) {
+    alert('Please log in to confirm your booking.');
+    navigate('/login'); // Replace '/login' with your login route
+    return;
+  }
+
   const bookingDetails = {
     userId: userId,
     roomId: bookingRoomId,
@@ -93,6 +121,7 @@ const handleBookingSubmission = async (event) => {
 
 
 
+
   const handleDateChange = (dates) => {
     const [start, end] = dates;
     setStartDate(start);
@@ -110,51 +139,27 @@ const handleBookingSubmission = async (event) => {
     guests: 1,
   });
 
-  const [availableRooms, setAvailableRooms] = useState([]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    document.getElementById('available-rooms-section').scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const API_URL = 'http://localhost:8000';
-  // In BookingPage.js
-const handleFetchRooms = () => {
-  const token = sessionStorage.getItem('jwt_token'); // Retrieve token from storage
-  fetch(`${API_URL}/booking`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-    .then(response => response.json())
-    .then(data => setAvailableRooms(data))
-    .catch(error => console.error('Error fetching available rooms:', error));
-};
-
+ 
   
-  // const handleFetchRooms = () => {
-  //   fetch(`${API_URL}/booking`)
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         throw new Error(`HTTP error! Status: ${response.status}`);
-  //       }
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       // Check if data.rooms is an array or do any necessary data transformation
-  //       const roomsArray = Array.isArray(data) ? data : [];
+    const [availableRooms, setAvailableRooms] = useState([]);
   
-  //       setAvailableRooms(roomsArray);
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error fetching available rooms:', error);
-  //     });
-  // };
+    // useEffect hook added to fetch rooms automatically on component mount
+    useEffect(() => {
+      handleFetchRooms();
+    }, []); // Empty array as second argument to only run once on mount
+  
+    const handleFetchRooms = () => {
+      const token = sessionStorage.getItem('jwt_token'); // Retrieve token from storage
+      fetch(`${API_URL}/booking`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then(response => response.json())
+      .then(data => setAvailableRooms(data))
+      .catch(error => console.error('Error fetching available rooms:', error));
+    };
+
   
 
   const handleRoomSelection = (roomId) => {
@@ -203,14 +208,6 @@ const handleFetchRooms = () => {
 
   return (
     <div className="booking-page">
-      <nav className="navigation-bar">
-        {/* Navigation content */}
-        {/* <a href="/">Home</a>
-        <a href="/about">About Us</a>
-        <a href="/contact">Contact</a>
-        <a href="/login">Login</a> */}
-      </nav>
-
       <section className="hero-section">
         <div className="hero-content">
           <h1>Discover Your Perfect Stay</h1>
@@ -219,86 +216,83 @@ const handleFetchRooms = () => {
             {/* Input fields */}
             {/* <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleInputChange} />
             <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleInputChange} /> */}
-            <button type="submit">Search</button>
+            {/* <button type="submit">Search</button> */}
           </form>
         </div>
         <img src="https://images.pexels.com/photos/2417842/pexels-photo-2417842.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Hero" className="hero-image" />
       </section>
-      {bookingSuccess && <SuccessMessage />}
+  
       <section className="available-rooms" id="available-rooms-section">
-  <h2>Available Rooms</h2>
-  <button onClick={handleFetchRooms}>Fetch Available Rooms</button>
-  <div className="room-grid">
-    {availableRooms.map((room) => (
-      <div key={room.id} className="room-card">
-        <img
-          src={`${API_URL}/${room.image_url}`}
-          alt={room.category}
-          className="room-image"
-        />
-        <div className="room-details">
-          <h2>{room.category}</h2>
-          <p>Style: {room.style}</p>
-          <p>Occupancy: {room.occupancy}</p>
-          <p>Size: {room.size}</p>
-          <p>Bed Type: {room.bed_type}</p>
-          <p>Price: {room.price}</p>
-          
-          {bookingRoomId === room.id ? (
-            <>
-              <div className="date-picker-container">
-                <DatePicker
-                  selected={startDate}
-                  onChange={handleDateChange}
-                  startDate={startDate}
-                  endDate={endDate}
-                  selectsRange
-                  inline
-                />
-                <button onClick={() => setBookingRoomId(null)} className="cancel-button">
-                Cancel
-                </button>
-                <button onClick={handleBookingSubmission} className="confirm-dates-button">
-                Confirm Booking
-                </button>
+        <h2>Available Rooms</h2>
+        <div className="room-grid">
+          {availableRooms.map((room) => (
+            <div key={room.id} className="room-card">
+              <img
+                src={`${API_URL}/${room.image_url}`}
+                alt={room.category}
+                className="room-image"
+              />
+              <div className="room-details">
+                <h2>{room.category}</h2>
+                <p>Style: {room.style}</p>
+                <p>Occupancy: {room.occupancy}</p>
+                <p>Size: {room.size}</p>
+                <p>Bed Type: {room.bed_type}</p>
+                <p>Price: £{room.price}</p>
                 
+                {bookingRoomId === room.id ? (
+                  <>
+                    <div className="date-picker-container">
+                      <DatePicker
+                        selected={startDate}
+                        onChange={handleDateChange}
+                        startDate={startDate}
+                        endDate={endDate}
+                        selectsRange
+                        inline
+                      />
+                      <button onClick={() => setBookingRoomId(null)} className="cancel-button">
+                        Cancel
+                      </button>
+                      {bookingSuccess ? (
+                        <SuccessMessage />
+                      ) : (
+                        <button onClick={handleBookingSubmission} className="confirm-dates-button">
+                          Confirm Booking
+                        </button>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <button onClick={() => handleBookRoom(room.id)} className="book-now-button">
+                    Book Now
+                  </button>
+                )}
               </div>
-              
-            </>
-          ) : (
-            <button onClick={() => handleBookRoom(room.id)} className="book-now-button">
-              Book Now
-            </button>
-          )}
+            </div>
+          ))}
         </div>
-      </div>
-    ))}
-  </div>
-</section>
-
-      
-
-      <section className="subscription-section">
-        {/* Subscription content */}
       </section>
 
       
 
 
       <footer className="footer">
-        <div>
-          <h3>About Us</h3>
-          <p>Learn more about our company and values.</p>
-        </div>
-        <div>
-          <h3>Contact</h3>
-          <p>Have questions? Feel free to reach out.</p>
-        </div>
-        <div>
-          <h3>Follow Us</h3>
-          <p>Connect with us on social media.</p>
-        </div>
-      </footer>
+  <div>
+    <h3>About Us</h3>
+    <p>At our hotel, we are committed to providing an unparalleled experience for our guests. Our team is dedicated to ensuring every stay is memorable, combining luxury with the comforts of home.</p>
+  </div>
+  <div>
+    <h3><a href="/contact" style={{ textDecoration: 'none', color: 'inherit' }}>Contact Us</a></h3>
+    
+    <p>If you have any inquiries or need assistance, please don't hesitate to <a href="/contact" style={{ textDecoration: 'none', color: 'inherit' }}>reach out</a>. <a href="https://wa.me/+447477181743" style={{ textDecoration: 'none', color: 'inherit' }}><img src={whatsappIcon} alt="WhatsApp" style={{ width: '114px', height: '20px' }}/></a></p>
+
+    {/* <p>If you have any inquiries or need assistance, please don't hesitate to <a href="/contact" style={{ textDecoration: 'none', color: 'inherit' }}>reach out</a>. <a href="https://wa.me/+447477181743" style={{ textDecoration: 'none', color: 'inherit' }}><img src="whatsapp.png" alt="WhatsApp"/></a></p> */}
+
+    {/* <p>If you have any inquiries or need assistance, please don't hesitate to <a href="/contact" style={{ textDecoration: 'none', color: 'inherit' }}>reach out</a>. <a href="https://wa.me/+447477181743" style={{ textDecoration: 'none', color: 'inherit' }}><img src="whatsapp_icon_url" alt="WhatsApp"/></a></p> */}
+  </div>
+</footer>
+
     </div>
   );
 }

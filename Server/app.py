@@ -11,6 +11,7 @@ from extensions import db, login_manager
 from config import Config
 from forms import LoginForm, RegistrationForm, BookingForm, EditBookingForm, UpdateProfileForm, ContactForm, OrderForm, SpecialOrderForm, FeedbackForm, RoomServiceOrderForm, FoodOrderForm, DeliveryOrderForm, DeliveryOrder, PaymentForm
 
+# import yagmail
 # import stripe
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
@@ -39,6 +40,19 @@ login_manager = LoginManager()
 app = Flask(__name__)
 app.config.from_object(Config)
 CORS(app, supports_credentials=True)
+
+
+# # Configuration for email account
+# app.config['MAIL_USERNAME'] = '
+# app.config['MAIL_PASSWORD'] = '
+
+# # Initialize yagmail with configured credentials
+# yag = yagmail.SMTP(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
+
+# def send_email_with_yagmail(recipient, subject, content):
+#     yag.send(to=recipient, subject=subject, contents=content)
+
+
 
 db.init_app(app)
 login_manager.init_app(app)
@@ -72,21 +86,11 @@ def token_required(f):
     return decorated
 
 
-# # Function to create JWT token
-# def create_jwt_token(user_id):
-#     payload = {
-#         'user_id': user_id,
-#         # 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
-#         'exp': datetime.utcnow() + timedelta(hours=24)
-#     }
-#     # token = jwt.encode(payload, 'your_secret_key', algorithm='HS256')
-#     token = jwt.encode(payload, 'your_secret_key', algorithm='HS256').decode('utf-8')
-#     return token  # Remove .decode('UTF-8')
-
 # Function to create JWT token
-def create_jwt_token(user_id):
+def create_jwt_token(user_id, is_admin):
     payload = {
         'user_id': user_id,
+        'is_admin': is_admin,
         'exp': datetime.utcnow() + timedelta(hours=24)
     }
     token = jwt.encode(payload, 'your_secret_key', algorithm='HS256')
@@ -94,9 +98,30 @@ def create_jwt_token(user_id):
 
 
 
+
 @app.route('/')
 def index():
     return 'Welcome to the home page'
+
+
+# @app.route('/send-email', methods=['POST'])
+# def send_email_route():
+#     data = request.json
+#     name = data.get('name')
+#     sender_email = data.get('email')
+#     message_body = data.get('message')
+
+#     # Prepare email content
+#     subject = f"Message from {name}: {sender_email}"
+#     content = message_body
+
+#     try:
+#         # Send the email to the specified recipient
+#         send_email_with_yagmail('recipient-email@gmail.com', subject, content)
+#         return jsonify({"message": "Email sent successfully"}), 200
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
+
 
 # Example of a protected route using a decorator
 @app.route('/protected')
@@ -115,16 +140,6 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# @app.route('/user', methods=['GET'])
-# @login_required
-# def get_user_info():
-#     # Retrieve and return user information in a JSON response
-#     user_data = {
-#         'id': current_user.id,
-#         'username': current_user.username,
-#         'is_admin': current_user.is_admin,  # Include any other necessary user data
-#     }
-#     return jsonify(user_data)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -152,12 +167,14 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
             login_user(user)
-            token = create_jwt_token(user.id)
+            # token = create_jwt_token(user.id)
+            token = create_jwt_token(user.id, user.is_admin) 
             # Return a JSON response with a success message, user admin status, and token
             return jsonify({'success': True, 'is_admin': user.is_admin, 'token': token}), 200
 
         # Return a JSON response for unsuccessful login attempts
         return jsonify({'success': False, 'error': 'Invalid username or password'}), 401
+        
 
 
 
@@ -217,7 +234,8 @@ def register():
 
     db.session.add(new_user)
     db.session.commit()
-    token = create_jwt_token(new_user.id)
+    token = create_jwt_token(new_user.id, new_user.is_admin)
+    # token = create_jwt_token(new_user.id)
     return jsonify({'success': True, 'username': new_user.username, 'is_admin': new_user.is_admin, 'token': token}), 201
 
 # Booking route

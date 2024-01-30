@@ -12,6 +12,7 @@ import DeliveryPage from './components/DeliveryPage';
 import FeedbackPage from './components/FeedbackPage';
 import FoodOrderPage from './components/FoodOrderPage';
 import LoginPage from './components/LoginPage';
+import LogoutPage from './components/LogoutPage';
 import Navbar from './components/Navbar';
 import OrderPage from './components/OrderPage';
 import PaymentPage from './components/PaymentPage';
@@ -48,7 +49,7 @@ function App() {
           <Route path="/feedback" element={<FeedbackPage />} />
           <Route path="/food-order" element={<FoodOrderPage />} />
           <Route path="/login" element={<LoginPage />} />
-          
+          <Route path="/logout" element={<LogoutPage />} />
           <Route path="/orders" element={<OrderPage />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/profile/user_id" element={<ProfilePage />} />

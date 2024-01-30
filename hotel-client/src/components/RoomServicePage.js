@@ -154,6 +154,7 @@ function RoomServicePage() {
     <div style={roomServicePageStyles.container}>
       <h1 style={roomServicePageStyles.heading}>Room Service Menu</h1>
       {roomServiceItems.map((item) => (
+      // console.log(item.image_url);
         <div key={item.id} style={roomServicePageStyles.orderItem}>
           <input
             type="checkbox"
@@ -163,11 +164,13 @@ function RoomServicePage() {
           />
           {/* <img src={`${API_URL}/${item.image_url}`} alt={item.name} /> */}
           <img src={`${API_URL}/${item.image_url}`} alt={item.name} style={roomServicePageStyles.image} />
+          {/* <img src={item.image_url} alt={item.name} style={roomServicePageStyles.image} /> */}
+
 
           {/* <img src={`${API_URL}/${room.image_url.split('static/').pop()}`} alt={room.category} className="room-image" /> */}
 
           {/* <img src={`${API_URL}/${item.image_url.split('static/').pop()}`} alt={item.name} /> */}
-          {item.name} - ${item.price}
+          {item.name} - £{item.price}
         </div>
       ))}
       <button

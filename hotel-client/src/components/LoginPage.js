@@ -20,7 +20,7 @@ function AuthPage() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setError('');
-
+    
         const endpoint = isLogin ? '/login' : '/register';
         const payload = isLogin ? { 
             username: credentials.username, 
@@ -30,50 +30,52 @@ function AuthPage() {
             password: credentials.password,
             is_admin: credentials.is_admin
         };
-        console.log("Sending to server:", payload);
-
+    
         if (!isLogin && credentials.password !== credentials.confirmPassword) {
             setError("Passwords don't match.");
             return;
         }
-
+    
         try {
             const response = await axios.post(`${API_URL}${endpoint}`, payload, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
+    
             console.log("Received from server:", response.data);
-
             if (response.data.success) {
-                if (isLogin) {
-                    // User is logging in
-                    // const userID = response.data.user_id; // Adjust according to your actual response structure
-                    // sessionStorage.setItem('user', JSON.stringify(response.data));
-                    sessionStorage.setItem('user_id', response.data.user_id);
-                    sessionStorage.setItem('jwt_token', response.data.token);
-                    
-                    navigate(`/booking`);
-                    // sessionStorage.setItem('user_logged_in', true);
-                    const redirectPath = response.data.is_admin ? '/admin' : `/booking`;
-
-                    // const redirectPath = response.data.is_admin ? '/admin' : `/profile/${userID}`;
-                    navigate(redirectPath);
-                } else {
-                    // User has registered successfully
-                    // New: Alert user and switch to login form without redirecting
+                if (!isLogin) {
+                    // Registration success
                     alert('Registration successful. Please log in.');
                     setIsLogin(true); // Switch to the login form
+                } else {
+                    // Login success
+                    sessionStorage.setItem('user_id', response.data.user_id);
+                    sessionStorage.setItem('jwt_token', response.data.token);
+                    sessionStorage.setItem('is_admin', response.data.is_admin);
+            
+                    // Redirect based on admin status
+                    if (response.data.is_admin) {
+                        navigate('/admin');
+                    } else {
+                        navigate('/booking');
+                    }
                 }
             } else {
+                // Handle failed login or registration
                 setError(response.data.message || 'Invalid credentials.');
             }
+            
+    
+            
         } catch (error) {
             console.error('Auth error:', error.response ? error.response.data : error);
-            setError('Username already exists');
+            setError('An unexpected error occurred');
         }
     };
-
+    
+    
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
     };
