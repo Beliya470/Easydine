@@ -62,28 +62,46 @@ from models import User, HotelBooking, Room, Order, SpecialOrder, Feedback, Room
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your_secret_key')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///easydine.db')
 
+
 # JWT token validation function
+from jose import jwt, JWTError
+
+import logging
+logging.basicConfig(level=logging.INFO)
+
 def validate_jwt_token(token):
     try:
-        payload = jwt.decode(token, 'your_secret_key', algorithms=['HS256'])
+        logging.info(f"Decoding JWT token: {token}")
+        payload = jwt.decode(token, Config.SECRET_KEY, algorithms=['HS256'])
         return payload['user_id']
+    except JWTError as e:
+        logging.error(f"JWTError: {e}")
+        return str(e), 400
     except Exception as e:
-        return None
+        logging.error(f"Unexpected error: {e}")
+        return str(e), 500
+
+
 
 
 # Decorator for routes that require a token
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = request.headers.get('Authorization')
-        if not token:
-            return jsonify({'message': 'Token is missing!'}), 403
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
+            return jsonify({'message': 'Authorization header is missing.'}), 403
         try:
-            user_id = validate_jwt_token(token.split(" ")[1])  # Assuming Bearer token
-        except:
-            return jsonify({'message': 'Token is invalid!'}), 403
-        return f(user_id, *args, **kwargs)
+            token = auth_header.split(" ")[1]
+        except IndexError:
+            return jsonify({'message': 'Bearer token not found.'}), 400
+        
+        token_result = validate_jwt_token(token)
+        if isinstance(token_result, tuple):
+            return jsonify({'message': token_result[0]}), token_result[1]
+        return f(token_result, *args, **kwargs)
     return decorated
+
 
 
 # Function to create JWT token
@@ -93,8 +111,9 @@ def create_jwt_token(user_id, is_admin):
         'is_admin': is_admin,
         'exp': datetime.utcnow() + timedelta(hours=24)
     }
-    token = jwt.encode(payload, 'your_secret_key', algorithm='HS256')
+    token = jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')  # Use Config.SECRET_KEY instead of 'your_secret_key'
     return token
+
 
 
 
@@ -167,28 +186,41 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
             login_user(user)
-            # token = create_jwt_token(user.id)
-            token = create_jwt_token(user.id, user.is_admin) 
-            # Return a JSON response with a success message, user admin status, and token
-            return jsonify({'success': True, 'is_admin': user.is_admin, 'token': token}), 200
+            # token = create_jwt_token(user.id, user.is_admin) 
+            token = create_jwt_token(user.id, user.is_admin)
+            # Return a JSON response with a success message, user admin status, token, and user_id
+            return jsonify({'success': True, 'is_admin': user.is_admin, 'token': token, 'user_id': user.id}), 200
 
         # Return a JSON response for unsuccessful login attempts
         return jsonify({'success': False, 'error': 'Invalid username or password'}), 401
-        
 
 
 
 # Route to retrieve user information
-@app.route('/user', methods=['GET'])
-@login_required  # Protect this route with login authentication
-def get_user_info():
-    # Return user information in the response
+# Flask Backend
+# Flask Backend
+@app.route('/user/<int:user_id>', methods=['GET'])
+@token_required
+def get_user_info(token_result, user_id): 
+# def get_user_info(user_id):
+    user = User.query.get_or_404(user_id)
+    # No need to check current_user since you've validated the token already
     user_data = {
-        'id': current_user.id,
-        'username': current_user.username,
-        'is_admin': current_user.is_admin,  # Include any other user data you need
+        'username': user.username,
+        # 'email': user.email,
+        # 'phone_number': user.phone_number,
+        'orders': [{'id': order.id, 'details': order.details, 'status': order.status, 'order_type': order.order_type} for order in user.orders],
+
+        # 'orders': [order.to_dict() for order in user.orders],
+        'room_service_orders': [order.to_dict() for order in user.orders if order.order_type == 'Room Service'],
+
+        # 'room_service_orders': [order.to_dict() for order in user.room_service_orders],
+        # 'special_orders': [order.to_dict() for order in user.special_orders]
+        'room_service_orders': [order.to_dict() for order in user.orders if order.order_type == 'Room Service'],
+
     }
-    return jsonify(user_data)
+    return jsonify(user_data), 200
+
 
 
 

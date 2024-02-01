@@ -26,16 +26,32 @@ import './App.css';
 function App() {
   const [user, setUser] = useState(null);
 
+  
+
+
   useEffect(() => {
-    // Make an authenticated request to fetch user data
-    axios.get('http://localhost:8000/user') // Replace with your actual API endpoint
-      .then((response) => {
-        setUser(response.data);
+    // Assuming you store the token in local storage or context after login
+    const token = localStorage.getItem('token'); // or useContext to get the token from context
+  
+    if (token) {
+      
+      axios.get('http://localhost:8000/user', {
+        headers: { Authorization: `Bearer ${token}` }
       })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-      });
+        .then((response) => {
+          setUser(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching user data:', error);
+          // Redirect to login if there's an error fetching user data
+          // This might be because the token is invalid or expired
+          // navigate('/login'); // Use navigate function from 'useNavigate' hook
+        });
+    }
   }, []);
+
+  
+  
 
   return (
     <Router>
@@ -52,7 +68,11 @@ function App() {
           <Route path="/logout" element={<LogoutPage />} />
           <Route path="/orders" element={<OrderPage />} />
           <Route path="/payment" element={<PaymentPage />} />
-          <Route path="/profile/user_id" element={<ProfilePage />} />
+          {/* <Route path="/profile/:userId" element={<ProfilePage />} /> */}
+          {/* <Route path="/user" element={<ProfilePage />} /> */}
+          <Route path="/user/:userId" element={<ProfilePage />} />
+
+
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/room-service/items" element={<RoomServicePage />} />
           <Route path="/room-service/items" element={<RoomServicePage />} />

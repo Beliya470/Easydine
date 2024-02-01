@@ -184,7 +184,7 @@ export const getDeliveryStatus = async (deliveryId) => {
 // Update profile
 export const updateProfile = async (profileData) => {
     try {
-        const response = await axios.post(`${API_URL}/profile`, profileData);
+        const response = await axios.post(`${API_URL}/user`, profileData);
         return response.data;
     } catch (error) {
         console.error('Error updating profile:', error);
@@ -192,9 +192,15 @@ export const updateProfile = async (profileData) => {
     }
 };
 
-// Add any other missing API functions here as needed
 
-// ...
+// apiService.js - Modified API service functions to include user-specific endpoints
+export const fetchUserDetails = async (userID) => {
+    const token = sessionStorage.getItem('jwt_token');
+    return axios.get(`${API_URL}/user/${userID}`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+};
+
 // Fetch all admin bookings
 export const fetchAdminBookings = async () => {
     try {

@@ -38,41 +38,43 @@ function AuthPage() {
     
         try {
             const response = await axios.post(`${API_URL}${endpoint}`, payload, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                headers: { 'Content-Type': 'application/json' }
             });
-    
-            console.log("Received from server:", response.data);
+        
+            console.log("Received from server:", response.data); // Debug: Log the entire response
+        
             if (response.data.success) {
                 if (!isLogin) {
-                    // Registration success
                     alert('Registration successful. Please log in.');
-                    setIsLogin(true); // Switch to the login form
+                    setIsLogin(true);
                 } else {
-                    // Login success
-                    sessionStorage.setItem('user_id', response.data.user_id);
-                    sessionStorage.setItem('jwt_token', response.data.token);
-                    sessionStorage.setItem('is_admin', response.data.is_admin);
+                    // Correctly retrieve user_id from the response. Adjust this line based on your actual response structure.
+                    // If the user ID is directly in the response, use response.data.user_id or similar.
+                    const userId = response.data.user_id; // Adjust this according to your response structure
             
-                    // Redirect based on admin status
-                    if (response.data.is_admin) {
-                        navigate('/admin');
+                    if (userId) {
+                        // sessionStorage.setItem('user_id', userId.toString()); // Ensure userId is a string
+                        // After successful login
+                        sessionStorage.setItem('user_id', response.data.user_id.toString());
+
+                        sessionStorage.setItem('jwt_token', response.data.token);
+                        sessionStorage.setItem('is_admin', response.data.is_admin.toString());
+                        
+                        navigate(response.data.is_admin ? '/admin' : '/booking');
                     } else {
-                        navigate('/booking');
+                        console.error('User ID is undefined.');
+                        setError('Login failed due to server error.');
                     }
                 }
             } else {
-                // Handle failed login or registration
                 setError(response.data.message || 'Invalid credentials.');
             }
-            
-    
             
         } catch (error) {
             console.error('Auth error:', error.response ? error.response.data : error);
             setError('An unexpected error occurred');
         }
+        
     };
     
     

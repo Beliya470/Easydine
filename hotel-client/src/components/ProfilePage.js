@@ -7,31 +7,68 @@ function ProfilePage() {
     const [userDetails, setUserDetails] = useState({ username: '', email: '', phone_number: '', orders: [] });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const API_URL = 'http://localhost:8000';
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// axios.get call within useEffect
+
+    //    const API_URL = 'http://localhost:8000';
     const navigate = useNavigate();
 
     const userID = sessionStorage.getItem('user_id');
-    
 
+
+
+    // ProfilePage.js - Modified useEffect hook
     useEffect(() => {
         if (!userID) {
             navigate('/login');
         } else {
             setLoading(true);
             
-            axios.get(`${API_URL}/profile/${userID}`)
-                .then(response => {
-                    setUserDetails(response.data);
-                })
-                .catch(error => {
+            const token = sessionStorage.getItem('jwt_token');
+            axios.get(`${API_URL}/user/${userID}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            // .then(response => {
+            //     const userData = response.data;
+            //     setUserDetails(userData);
+            //     setLoading(false);
+            //   })
+            .then(response => {
+                const userData = response.data;
+                // Assuming userData contains 'room_service_orders' and 'special_orders'
+                const formattedUserData = {
+                    ...userData,
+                    username: userData.username,
+                    ordersCount: userData.orders ? userData.orders.length : 0,
+                    roomServiceOrdersCount: userData.room_service_orders ? userData.room_service_orders.length : 0,
+                    specialOrdersCount: userData.special_orders ? userData.special_orders.length : 0
+                };
+                setUserDetails(formattedUserData);
+                setLoading(false);
+            })
+           
+            .catch(error => {
+                if (error.message === "Network Error") {
+                    setError('Network error, please check your connection and try again');
+                } else {
                     console.error("Error fetching profile data:", error);
                     setError('Error fetching profile data');
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+                }
+                setLoading(false);
+            });
         }
     }, [userID, navigate]);
+    
+
+
+    
+
+    
+
+
+
+
+
 
     const handleLogout = () => {
         sessionStorage.clear();
@@ -46,27 +83,31 @@ function ProfilePage() {
         <div style={styles.profileContainer}>
             <div style={styles.profileIcon}><FaUserCircle size={100} /></div>
             <h1 style={styles.profileHeader}>Profile</h1>
-            <p style={styles.username}>Hello, {userDetails.username || 'User'}</p>
-            <div style={styles.info}>
+            {/* <p style={styles.username}>Hello, {userDetails.username || 'User'}</p> */}
+            <p style={styles.username}>Hello, {userDetails.username || 'Guest'}</p>
+
+            {/* <div style={styles.info}>
                 <strong>Email:</strong> {userDetails.email || 'N/A'}
             </div>
             <div style={styles.info}>
                 <strong>Phone Number:</strong> {userDetails.phone_number || 'N/A'}
-            </div>
+            </div> */}
+
             <div style={styles.info}>
-                <strong>My Orders:</strong>
-                {userDetails.orders ? (
-                    userDetails.orders.length > 0 ? (
-                        userDetails.orders.map((order) => (
-                            <div key={order.id} style={styles.orderDetails}>{order.details}</div>
-                        ))
-                    ) : (
-                        <p>No orders made yet.</p>
-                    )
-                ) : (
-                    <p>Loading orders...</p>
-                )}
-            </div>
+    <strong>Room Service Orders:</strong>
+    {userDetails.ordersCount === 0 ? <p>0</p> : userDetails.orders.map((order) => (
+        <div key={order.id} style={styles.orderDetails}>{order.details}</div>
+    ))}
+</div>
+<div style={styles.info}>
+    <strong>Booked Rooms:</strong>
+    <p>{userDetails.roomServiceOrdersCount === 0 ? '0' : userDetails.roomServiceOrdersCount}</p>
+</div>
+<div style={styles.info}>
+    <strong>Special Orders:</strong>
+    <p>{userDetails.specialOrdersCount === 0 ? '0' : userDetails.specialOrdersCount}</p>
+</div>
+            
             <button onClick={handleLogout} style={styles.logoutButton}>Log Out</button>
         </div>
     );

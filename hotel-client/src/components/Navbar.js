@@ -30,6 +30,7 @@ function Navbar() {
         transform: 'scale(0.95)', /* Slightly shrink the button when clicked */
         transition: 'transform 0.2s', /* Smooth transition for the transform */
     };
+    const userID = sessionStorage.getItem('user_id');
 
     return (
         <nav style={navStyle}>
@@ -39,7 +40,10 @@ function Navbar() {
             <Link to="/profile">Profile</Link> */}
             <Link to="/booking" style={linkStyle}>Book a Room</Link>
             <Link to="/logout" style={linkStyle}>Logout</Link>
-            <Link to="/profile/user_id" style={linkStyle}>Profile</Link>          
+            {/* <Link to="/user" style={linkStyle}>Profile</Link> */}
+            <Link to={`/user/${userID}`} style={linkStyle}>Profile</Link>
+
+                      
                {/* <Link to="/orders">View Orders</Link>
             <Link to="/feedback">Feedback</Link>
             <Link to="/admin">Admin Dashboard</Link> */}
