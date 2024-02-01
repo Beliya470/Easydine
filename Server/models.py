@@ -48,6 +48,7 @@ class HotelBooking(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
+            'user_id': self.user_id,
             'room': self.room.category,  # Display room category
             'check_in': self.check_in.strftime('%Y-%m-%d'),
             'check_out': self.check_out.strftime('%Y-%m-%d')
@@ -63,7 +64,7 @@ class User(UserMixin, db.Model):
     bookings = db.relationship('HotelBooking', backref='user', lazy=True)
     orders = db.relationship('Order', backref='user', lazy=True)
     feedbacks = db.relationship('Feedback', backref='user', lazy=True)
-    # special_orders = db.relationship('SpecialOrder', backref='user', lazy=True)
+    special_orders = db.relationship('SpecialOrder', backref='user', lazy=True)
     # hotel_bookings = db.relationship('HotelBooking', backref='user', lazy=True)
     # orders = db.relationship('Order', backref='user', lazy=True)
 
@@ -111,6 +112,15 @@ class SpecialOrder(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     request = db.Column(db.String(500), nullable=False)
     status = db.Column(db.String(100), default='Pending')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'request': self.request,
+            'status': self.status
+        }
+
 
 # New Feedback Model
 class Feedback(db.Model):

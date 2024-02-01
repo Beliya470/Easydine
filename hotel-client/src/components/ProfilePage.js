@@ -40,6 +40,9 @@ function ProfilePage() {
                     ...userData,
                     username: userData.username,
                     ordersCount: userData.orders ? userData.orders.length : 0,
+                    // bookedRoomsCount: userData.hotel_bookings_count,
+                    bookedRoomsCount: userData.hotel_bookings_count || 0,
+
                     roomServiceOrdersCount: userData.room_service_orders ? userData.room_service_orders.length : 0,
                     specialOrdersCount: userData.special_orders ? userData.special_orders.length : 0
                 };
@@ -101,8 +104,12 @@ function ProfilePage() {
 </div>
 <div style={styles.info}>
     <strong>Booked Rooms:</strong>
-    <p>{userDetails.roomServiceOrdersCount === 0 ? '0' : userDetails.roomServiceOrdersCount}</p>
+    <p>{userDetails.bookedRoomsCount}</p> {/* Use the updated key here */}
 </div>
+{/* <div style={styles.info}>
+    <strong>Booked Rooms:</strong>
+    <p>{userDetails.roomServiceOrdersCount === 0 ? '0' : userDetails.roomServiceOrdersCount}</p>
+</div> */}
 <div style={styles.info}>
     <strong>Special Orders:</strong>
     <p>{userDetails.specialOrdersCount === 0 ? '0' : userDetails.specialOrdersCount}</p>

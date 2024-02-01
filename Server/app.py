@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 # from flask_cors import CORS
 from flask_cors import CORS, cross_origin
 import os
-
+from flask_migrate import Migrate
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
@@ -40,19 +40,7 @@ login_manager = LoginManager()
 app = Flask(__name__)
 app.config.from_object(Config)
 CORS(app, supports_credentials=True)
-
-
-# # Configuration for email account
-# app.config['MAIL_USERNAME'] = '
-# app.config['MAIL_PASSWORD'] = '
-
-# # Initialize yagmail with configured credentials
-# yag = yagmail.SMTP(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
-
-# def send_email_with_yagmail(recipient, subject, content):
-#     yag.send(to=recipient, subject=subject, contents=content)
-
-
+migrate = Migrate(app, db)
 
 db.init_app(app)
 login_manager.init_app(app)
@@ -212,7 +200,15 @@ def get_user_info(token_result, user_id):
         'orders': [{'id': order.id, 'details': order.details, 'status': order.status, 'order_type': order.order_type} for order in user.orders],
 
         # 'orders': [order.to_dict() for order in user.orders],
-        'room_service_orders': [order.to_dict() for order in user.orders if order.order_type == 'Room Service'],
+        'hotel_bookings': [booking.to_dict() for booking in user.bookings],
+        'hotel_bookings_count': len(user.bookings),
+        
+        # 'special_orders': [special_order.to_dict() for special_order in user.special_orders],
+        'special_orders': [special_order.to_dict() for special_order in user.special_orders],
+
+
+
+        # 'room_service_orders': [order.to_dict() for order in user.orders if order.order_type == 'Room Service'],
 
         # 'room_service_orders': [order.to_dict() for order in user.room_service_orders],
         # 'special_orders': [order.to_dict() for order in user.special_orders]
