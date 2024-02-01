@@ -83,6 +83,10 @@ function OrderManagement() {
       console.error('Error adding item:', error.response || error);  // Log detailed error
     }
 };
+const handleLogout = () => {
+  sessionStorage.clear();
+  navigate('/login');
+};
 
 
 
@@ -151,7 +155,7 @@ const handleDeleteRoom = async (roomId) => {
             <p>Occupancy: {room.occupancy}</p>
             <p>Bed Type: {room.bed_type}</p>
             <p>Style: {room.style}</p>
-            <p>Price: ${room.price}</p>
+            <p>Price: £{room.price}</p>
             <button onClick={() => handleDeleteRoom(room.id)}>Delete</button>
             {/* Implement edit button if needed */}
           </div>
@@ -174,7 +178,7 @@ const handleDeleteRoom = async (roomId) => {
           <div key={item.id} className="item-entry">
             <p>Name: {item.name}</p>
             <p>Description: {item.description}</p>
-            <p>Price: ${item.price}</p>
+            <p>Price: £{item.price}</p>
             <button onClick={() => handleDeleteItem(item.id)}>Delete</button>
             {/* Implement edit button if needed */}
           </div>
