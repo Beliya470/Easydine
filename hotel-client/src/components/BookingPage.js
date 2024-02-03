@@ -15,6 +15,8 @@ import whatsappIcon from './whatsapp.png'; // Adjust the path if necessary
 
 
 function BookingPage() {
+  const [selectedDates, setSelectedDates] = useState([]);
+
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [bookingRoomId, setBookingRoomId] = useState(null);
@@ -25,7 +27,7 @@ function BookingPage() {
   const navigate = useNavigate();
 
 
-  const API_URL = 'https://easydine2024-8.onrender.com'; // Backend API URL
+  const API_URL = 'http://localhost:8000'; // Backend API URL
   const [showBookingForm, setShowBookingForm] = useState(false);
  
 
@@ -43,15 +45,15 @@ function BookingPage() {
     handleFetchRooms(); // This will fetch rooms when the form is submitted
   };
   
-  
 
 
 
   const handleBookRoom = (roomId) => {
-    
     setBookingRoomId(roomId); // Set the current room id for booking
-    // You might want to toggle visibility of the date-picker here or navigate the user to the booking details page
+    setSelectedDates([]); // Reset selected dates when a new room is selected
+    setShowBookingForm(false); // Optionally hide the booking form if it was shown
   };
+  
 
   const confirmDates = () => {
     setShowBookingForm(true);
@@ -117,18 +119,23 @@ const handleBookingSubmission = async (event) => {
   }
 };
 
+const handleDateChange = (date) => {
+  setSelectedDates(prevDates => {
+    const index = prevDates.findIndex(selectedDate => 
+      date.getDate() === selectedDate.getDate() &&
+      date.getMonth() === selectedDate.getMonth() &&
+      date.getFullYear() === selectedDate.getFullYear()
+    );
+    if (index > -1) {
+      // Date already selected, remove it
+      return prevDates.filter((_, i) => i !== index);
+    } else {
+      // Date not selected, add it
+      return [...prevDates, date];
+    }
+  });
+};
 
-
-
-
-
-
-  const handleDateChange = (dates) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-    // Here you would handle the date change, perhaps updating state or making a booking API call
-  };
 
 
   const [formData, setFormData] = useState({
@@ -168,8 +175,7 @@ const handleBookingSubmission = async (event) => {
     // Additional logic for room selection can be added here
   };
 
-  const roomList = Array.isArray(availableRooms) ? availableRooms.map(room => (
-  //  const roomList = availableRooms.map(room => (
+  const roomList = availableRooms.map(room => (
     <div key={room.id} className="room-card">
       {/* <img src={`${API_URL}/${room.image_url.replace('static/', '')}`} alt={room.category} className="room-image" /> */}
       {/* <img src={`${API_URL}${room.image_url}`} alt={room.category} className="room-image" /> */}
@@ -183,20 +189,14 @@ const handleBookingSubmission = async (event) => {
           <>
             <div className="date-picker-container">
             <DatePicker
-              selected={startDate}
-              onChange={handleDateChange}
-              startDate={startDate}
-              inline
-            />
+  inline
+  onSelect={handleDateChange} // Use onSelect for individual dates
+  // No need to specify 'selected' for this use case
+  highlightDates={selectedDates}
+  onChange={date => {}} // Needed to satisfy TypeScript if using TS, otherwise optional
+  shouldCloseOnSelect={false} // Keeps the date picker open on date select
+/>
 
-              {/* <DatePicker
-                selected={startDate}
-                onChange={handleDateChange}
-                startDate={startDate}
-                endDate={endDate}
-                selectsRange
-                inline
-              /> */}
               <button onClick={confirmDates} className="confirm-dates-button">Select Dates</button>
             </div>
             {showBookingForm && (
@@ -212,7 +212,7 @@ const handleBookingSubmission = async (event) => {
         )}
       </div>
     </div>
-  )): null;
+  ));
   
 
   return (
@@ -234,9 +234,7 @@ const handleBookingSubmission = async (event) => {
       <section className="available-rooms" id="available-rooms-section">
         <h2>Available Rooms</h2>
         <div className="room-grid">
-
-        {Array.isArray(availableRooms) && availableRooms.map((room) => (
-          // {availableRooms.map((room) => (
+          {availableRooms.map((room) => (
             <div key={room.id} className="room-card">
               <img
                 src={`${API_URL}/${room.image_url}`}
@@ -254,14 +252,15 @@ const handleBookingSubmission = async (event) => {
                 {bookingRoomId === room.id ? (
                   <>
                     <div className="date-picker-container">
-                      <DatePicker
-                        selected={startDate}
-                        onChange={handleDateChange}
-                        startDate={startDate}
-                        endDate={endDate}
-                        selectsRange
-                        inline
-                      />
+                    <DatePicker
+  inline
+  onSelect={handleDateChange} // Use onSelect for individual dates
+  // No need to specify 'selected' for this use case
+  highlightDates={selectedDates}
+  onChange={date => {}} // Needed to satisfy TypeScript if using TS, otherwise optional
+  shouldCloseOnSelect={false} // Keeps the date picker open on date select
+/>
+
                       <button onClick={() => setBookingRoomId(null)} className="cancel-button">
                         Cancel
                       </button>
@@ -285,6 +284,7 @@ const handleBookingSubmission = async (event) => {
         </div>
       </section>
 
+      
 
 
       <footer className="footer">
