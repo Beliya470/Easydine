@@ -84,6 +84,7 @@ class RoomServiceItem(db.Model):
     description = db.Column(db.String(500), nullable=False)
     price = db.Column(db.Float, nullable=False)
     image_url = db.Column(db.String(500))  # Placeholder for image URLs
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def to_dict(self):
         return {
@@ -93,7 +94,6 @@ class RoomServiceItem(db.Model):
             'price': self.price,
             'image_url': self.image_url
         }
-
 
 
 class DeliveryOrder(db.Model):

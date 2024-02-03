@@ -190,32 +190,104 @@ def login():
 @app.route('/user/<int:user_id>', methods=['GET'])
 @token_required
 def get_user_info(token_result, user_id): 
-# def get_user_info(user_id):
     user = User.query.get_or_404(user_id)
-    # No need to check current_user since you've validated the token already
     user_data = {
         'username': user.username,
-        # 'email': user.email,
-        # 'phone_number': user.phone_number,
         'orders': [{'id': order.id, 'details': order.details, 'status': order.status, 'order_type': order.order_type} for order in user.orders],
-
-        # 'orders': [order.to_dict() for order in user.orders],
-        'hotel_bookings': [booking.to_dict() for booking in user.bookings],
+        'hotel_bookings': [{
+            'id': booking.id,
+            'room_id': booking.room_id,
+            'check_in': booking.check_in,
+            'check_out': booking.check_out,
+            'room': {
+                'category': booking.room.category,  # Include room category
+                'style': booking.room.style  # Include room style
+            }
+        } for booking in user.bookings],
         'hotel_bookings_count': len(user.bookings),
-        
-        # 'special_orders': [special_order.to_dict() for special_order in user.special_orders],
         'special_orders': [special_order.to_dict() for special_order in user.special_orders],
-
-
-
-        # 'room_service_orders': [order.to_dict() for order in user.orders if order.order_type == 'Room Service'],
-
-        # 'room_service_orders': [order.to_dict() for order in user.room_service_orders],
-        # 'special_orders': [order.to_dict() for order in user.special_orders]
         'room_service_orders': [order.to_dict() for order in user.orders if order.order_type == 'Room Service'],
-
     }
     return jsonify(user_data), 200
+
+
+@app.route('/delete-room-service-order/<int:order_id>', methods=['DELETE'])
+@token_required
+def delete_room_service_order(user_id, order_id):
+    # Log attempt to delete
+    app.logger.info(f"User {user_id} attempting to delete Room Service Order {order_id}")
+
+    # Find the order by ID and user_id
+    order = Order.query.filter_by(id=order_id, user_id=user_id).first()
+
+    # If the order doesn't exist, return an error
+    if not order:
+        app.logger.info("Order not found")
+        return jsonify({"error": "Order not found"}), 404
+
+    # If the order does exist, delete it
+    db.session.delete(order)
+    db.session.commit()
+    return jsonify({"message": "Order deleted successfully"}), 200
+
+
+
+
+
+@app.route('/delete-booked-room/<int:booking_id>', methods=['DELETE'])
+@token_required
+def delete_booked_room(user_id, booking_id):
+    try:
+        # Get the booked room by ID
+        booked_room = HotelBooking.query.get_or_404(booking_id)
+        
+        # Check if the booked room belongs to the authenticated user
+        if booked_room.user_id != user_id:
+            return jsonify({"error": "Unauthorized"}), 401
+
+        # Delete the booked room
+        db.session.delete(booked_room)
+        db.session.commit()
+        
+        return jsonify({"message": "Booked room deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/delete-special-order/<int:order_id>', methods=['DELETE'])
+@token_required
+def delete_special_order(user_id, order_id):
+    try:
+        special_order = SpecialOrder.query.get_or_404(order_id)
+        if special_order.user_id != user_id:
+            return jsonify({"error": "Unauthorized"}), 401
+
+        # Delete the special order
+        db.session.delete(special_order)
+        db.session.commit()
+        
+        return jsonify({"message": "Special order deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# @app.route('/delete-special-order/<int:order_id>', methods=['DELETE'])
+# @token_required
+# def delete_special_order(token_result, order_id):
+#     try:
+#         # Get the special order by ID
+#         special_order = SpecialOrder.query.get_or_404(order_id)
+        
+#         # Check if the special order belongs to the authenticated user
+#         if special_order.user_id != token_result['user_id']:
+#             return jsonify({"error": "Unauthorized"}), 401
+
+#         # Delete the special order
+#         db.session.delete(special_order)
+#         db.session.commit()
+        
+#         return jsonify({"message": "Special order deleted successfully"}), 200
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
 
 
 
