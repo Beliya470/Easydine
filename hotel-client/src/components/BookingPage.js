@@ -25,7 +25,7 @@ function BookingPage() {
   const navigate = useNavigate();
 
 
-  const API_URL = 'http://localhost:8000'; // Backend API URL
+  const API_URL = 'https://easydine2024-8.onrender.com'; // Backend API URL
   const [showBookingForm, setShowBookingForm] = useState(false);
  
 
@@ -42,6 +42,7 @@ function BookingPage() {
     // Call the function to fetch rooms or handle the submission logic here
     handleFetchRooms(); // This will fetch rooms when the form is submitted
   };
+  
   
 
 
@@ -167,7 +168,8 @@ const handleBookingSubmission = async (event) => {
     // Additional logic for room selection can be added here
   };
 
-  const roomList = availableRooms.map(room => (
+  const roomList = Array.isArray(availableRooms) ? availableRooms.map(room => (
+  //  const roomList = availableRooms.map(room => (
     <div key={room.id} className="room-card">
       {/* <img src={`${API_URL}/${room.image_url.replace('static/', '')}`} alt={room.category} className="room-image" /> */}
       {/* <img src={`${API_URL}${room.image_url}`} alt={room.category} className="room-image" /> */}
@@ -180,14 +182,21 @@ const handleBookingSubmission = async (event) => {
         {bookingRoomId === room.id ? (
           <>
             <div className="date-picker-container">
-              <DatePicker
+            <DatePicker
+              selected={startDate}
+              onChange={handleDateChange}
+              startDate={startDate}
+              inline
+            />
+
+              {/* <DatePicker
                 selected={startDate}
                 onChange={handleDateChange}
                 startDate={startDate}
                 endDate={endDate}
                 selectsRange
                 inline
-              />
+              /> */}
               <button onClick={confirmDates} className="confirm-dates-button">Select Dates</button>
             </div>
             {showBookingForm && (
@@ -203,7 +212,7 @@ const handleBookingSubmission = async (event) => {
         )}
       </div>
     </div>
-  ));
+  )): null;
   
 
   return (
@@ -225,7 +234,9 @@ const handleBookingSubmission = async (event) => {
       <section className="available-rooms" id="available-rooms-section">
         <h2>Available Rooms</h2>
         <div className="room-grid">
-          {availableRooms.map((room) => (
+
+        {Array.isArray(availableRooms) && availableRooms.map((room) => (
+          // {availableRooms.map((room) => (
             <div key={room.id} className="room-card">
               <img
                 src={`${API_URL}/${room.image_url}`}
@@ -274,7 +285,6 @@ const handleBookingSubmission = async (event) => {
         </div>
       </section>
 
-      
 
 
       <footer className="footer">
