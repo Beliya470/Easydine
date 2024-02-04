@@ -214,21 +214,24 @@ def get_user_info(token_result, user_id):
 @app.route('/delete-room-service-order/<int:order_id>', methods=['DELETE'])
 @token_required
 def delete_room_service_order(user_id, order_id):
-    # Log attempt to delete
-    app.logger.info(f"User {user_id} attempting to delete Room Service Order {order_id}")
+    try:
+        # Get the room service order by ID
+        order = Order.query.get_or_404(order_id)
+        
+        # Check if the order belongs to the authenticated user
+        if order.user_id != user_id:
+            return jsonify({"error": "Unauthorized"}), 401
 
-    # Find the order by ID and user_id
-    order = Order.query.filter_by(id=order_id, user_id=user_id).first()
+        # Delete the room service order
+        db.session.delete(order)
+        db.session.commit()
+        
+        return jsonify({"message": "Room Service Order deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-    # If the order doesn't exist, return an error
-    if not order:
-        app.logger.info("Order not found")
-        return jsonify({"error": "Order not found"}), 404
 
-    # If the order does exist, delete it
-    db.session.delete(order)
-    db.session.commit()
-    return jsonify({"message": "Order deleted successfully"}), 200
+
 
 
 

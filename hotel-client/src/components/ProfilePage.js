@@ -120,31 +120,46 @@ function ProfilePage() {
     
       const handleDeleteRoomServiceOrder = (orderId) => {
         const token = sessionStorage.getItem('jwt_token');
-        axios
-          .delete(`${API_URL}/delete-room-service-order/${orderId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((response) => {
-            // Log success message
-            console.log('Room Service Order deleted successfully');
-            // Update state to remove the deleted room service order
-            setUserDetails((prevUserDetails) => ({
-              ...prevUserDetails,
-              
-              // Assuming room_service_orders is the correct key and it contains an array of orders
-              room_service_orders: prevUserDetails.room_service_orders.filter(
-
-                (order) => order.id !== orderId
-              ),
-            }));
-          })
-          .catch((error) => {
-            console.error('Error deleting Room Service Order:', error.response.data);
-            // Optionally, refresh or fetch user details again to ensure UI consistency
-          });
+        axios.delete(`${API_URL}/delete-room-service-order/${orderId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          console.log('Room Service Order deleted successfully');
+          // Re-fetch user details to force refresh
+          fetchUserDetails();
+        })
+        .catch((error) => {
+          console.error('Error deleting Room Service Order:', error);
+        });
       };
+      
+      // New function to re-fetch user details
+      const fetchUserDetails = () => {
+        const token = sessionStorage.getItem('jwt_token');
+        axios.get(`${API_URL}/user/${userID}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(response => {
+          const userData = response.data;
+          setUserDetails({
+            ...userData,
+            username: userData.username,
+            ordersCount: userData.orders ? userData.orders.length : 0,
+            bookedRoomsCount: userData.hotel_bookings_count || 0,
+            roomServiceOrdersCount: userData.room_service_orders ? userData.room_service_orders.length : 0,
+            specialOrdersCount: userData.special_orders ? userData.special_orders.length : 0
+          });
+        })
+        .catch(error => {
+          console.error("Error fetching profile data:", error);
+        });
+      };
+      
+      
+      
+      
       
       
       const handleDeleteSpecialOrder = (orderId) => {

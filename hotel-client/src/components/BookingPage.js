@@ -45,9 +45,6 @@ function BookingPage() {
     handleFetchRooms(); // This will fetch rooms when the form is submitted
   };
   
-
-
-
   const handleBookRoom = (roomId) => {
     setBookingRoomId(roomId); // Set the current room id for booking
     setSelectedDates([]); // Reset selected dates when a new room is selected
